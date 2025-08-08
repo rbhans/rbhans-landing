@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RobHansen - Engineering & Automation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Dark mode (Claude dark theme) */
+            --bg: #1e1e1e;
+            --bg-secondary: #2d2d2d;
+            --fg: #f5f5f5;
+            --fg-dim: #a0a0a0;
+            --accent: #d97757;
+            --accent-dim: #c5644a;
+            --border: #3d3d3d;
+            --hover: #353535;
+            --category: #888;
+            --warning: #ff9c3a;
+            --automation-blue: #5aa3d8;
+            --control-green: #6fb07f;
+            --sensor-yellow: #f4c367;
+        }
+
+        /* Light mode (Claude light theme) */
+        body.light-mode {
+            --bg: #ffffff;
+            --bg-secondary: #f7f7f7;
+            --fg: #2d2d2d;
+            --fg-dim: #666666;
+            --accent: #d97757;
+            --accent-dim: #c5644a;
+            --border: #e0e0e0;
+            --hover: #f0f0f0;
+            --category: #777;
+            --warning: #ff9c3a;
+            --automation-blue: #4a93c8;
+            --control-green: #5fa06f;
+            --sensor-yellow: #e4b357;
+        }
+
+        /* Fix light mode for specific elements */
+        body.light-mode .admin-bar {
+            background: var(--warning);
+            color: #ffffff;
+        }
+
+        body.light-mode .btn {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        body.light-mode .category-btn.active {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        body.light-mode .tag-selector .tag-option.selected {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        body.light-mode #passwordModal > div {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        code, .mono {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+        }
+
+        /* Grid pattern background with animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(217, 119, 87, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(217, 119, 87, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+            animation: gridShift 20s linear infinite;
+        }
+
+        @keyframes gridShift {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(40px, 40px);
+            }
+        }
+
+        /* Floating orbs animation */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--accent), transparent);
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 30s infinite ease-in-out;
+        }
+
+        .bg-orb:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            top: -300px;
+            left: -300px;
+            animation-duration: 35s;
+        }
+
+        .bg-orb:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            bottom: -200px;
+            right: -200px;
+            animation-duration: 40s;
+            animation-delay: -10s;
+        }
+
+        .bg-orb:nth-child(3) {
+            width: 500px;
+            height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 45s;
+            animation-delay: -20s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(-30px, 40px) scale(1.05);
+            }
+            50% {
+                transform: translate(40px, -30px) scale(0.95);
+            }
+            75% {
+                transform: translate(-20px, -40px) scale(1.02);
+            }
+        }
+
+        /* Ensure light mode works on all elements */
+        body.light-mode * {
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            opacity: 0.8;
+        }
+
+        .theme-toggle:hover {
+            opacity: 1;
+            background: var(--hover);
+            border-color: var(--accent);
+        }
+
+        .theme-toggle .icon {
+            width: 24px;
+            height: 24px;
+            color: var(--fg);
+        }
+
+        /* Admin Mode Toggle */
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            opacity: 0.3;
+        }
+
+        .admin-toggle:hover {
+            opacity: 1;
+            background: var(--hover);
+            border-color: var(--accent);
+        }
+
+        .admin-toggle.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            opacity: 1;
+        }
+
+        .admin-toggle .icon {
+            width: 24px;
+            height: 24px;
+            color: var(--fg);
+        }
+
+        body.admin-mode .admin-toggle .icon {
+            color: var(--bg);
+        }
+
+        /* Admin controls - hidden by default */
+        .admin-controls {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        body.admin-mode .admin-controls {
+            display: block;
+        }
+
+        .admin-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--warning);
+            color: var(--bg);
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 999;
+            display: none;
+        }
+
+        body.admin-mode .admin-bar {
+            display: block;
+        }
+
+        body.admin-mode .container {
+            margin-top: 2rem;
+        }
+
+        /* Header with subtle building automation aesthetic */
+        header {
+            margin-bottom: 4rem;
+            padding: 3rem 0 2rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span {
+            color: var(--accent);
+        }
+
+        .tagline {
+            color: var(--fg-dim);
+            font-size: 0.95rem;
+            margin-left: 76px;
+        }
+
+        .tagline .mono {
+            color: var(--automation-blue);
+            font-size: 0.85rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 1px;
+            margin-bottom: 3rem;
+            background: var(--border);
+            padding: 1px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .nav-item {
+            flex: 1;
+            color: var(--fg-dim);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg);
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: var(--hover);
+            color: var(--fg);
+        }
+
+        .nav-item.active {
+            background: var(--bg-secondary);
+            color: var(--accent);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title .indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Tag Management */
+        .tag-manager {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .tag-manager h3 {
+            font-size: 0.9rem;
+            color: var(--fg-dim);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--fg-dim);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .tag .remove {
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .tag .remove:hover {
+            opacity: 1;
+        }
+
+        .tag-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tag-input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .tag-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--accent-dim);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--fg);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--hover);
+            border-color: var(--accent);
+        }
+
+        /* Add Item Form */
+        .add-item-form {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--fg-dim);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .tag-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag-selector .tag-option {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--fg-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-selector .tag-option:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .tag-selector .tag-option.selected {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        /* Category filters */
+        .category-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--fg-dim);
+            padding: 0.4rem 1rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .category-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .category-btn.active {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        /* Grid layout */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Item cards with building automation theme */
+        .item-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--fg);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.2s;
+        }
+
+        .item-card:hover {
+            border-color: var(--accent-dim);
+            transform: translateY(-2px);
+        }
+
+        .item-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        body.admin-mode .item-card {
+            padding-bottom: 3rem;
+        }
+
+        .item-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.5rem;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            display: none;
+            gap: 0.5rem;
+        }
+
+        body.admin-mode .item-controls {
+            display: flex;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--fg);
+        }
+
+        .item-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .item-tag {
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: rgba(0, 212, 170, 0.1);
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .item-description {
+            color: var(--fg-dim);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .item-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--category);
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Status indicators for building automation theme */
+        .status-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-online { background: var(--control-green); }
+        .status-warning { background: var(--sensor-yellow); }
+        .status-offline { background: var(--fg-dim); }
+
+        /* About section with building automation stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--fg-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+            color: var(--fg-dim);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--fg-dim);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .logo-text {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                margin-left: 0;
+                text-align: center;
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+            
+            .tagline .mono {
+                display: block;
+                margin-top: 0.25rem;
+            }
+            
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav {
+                flex-direction: column;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            
+            .category-filters {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .category-btn {
+                flex-shrink: 0;
+                font-size: 0.85rem;
+                padding: 0.35rem 0.8rem;
+            }
+            
+            .tag-manager {
+                padding: 0.75rem;
+            }
+            
+            .tag-list {
+                gap: 0.35rem;
+            }
+            
+            .tag {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .add-item-form {
+                padding: 1rem;
+            }
+            
+            .form-group label {
+                font-size: 0.85rem;
+            }
+            
+            .tag-selector {
+                gap: 0.35rem;
+            }
+            
+            .tag-selector .tag-option {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .item-card {
+                padding: 1.25rem;
+            }
+            
+            body.admin-mode .item-card {
+                padding-bottom: 3.5rem;
+            }
+            
+            .item-tags {
+                gap: 0.2rem;
+            }
+            
+            .item-tag {
+                font-size: 0.65rem;
+                padding: 0.1rem 0.4rem;
+            }
+            
+            .item-meta {
+                font-size: 0.75rem;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .admin-toggle {
+                width: 45px;
+                height: 45px;
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .theme-toggle {
+                width: 45px;
+                height: 45px;
+                bottom: 15px;
+                left: 15px;
+            }
+            
+            footer {
+                padding: 2rem 1rem;
+            }
+            
+            .social-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Adjust background orbs for mobile */
+            .bg-orb:nth-child(1) {
+                width: 300px;
+                height: 300px;
+                top: -150px;
+                left: -150px;
+            }
+            
+            .bg-orb:nth-child(2) {
+                width: 250px;
+                height: 250px;
+                bottom: -125px;
+                right: -125px;
+            }
+            
+            .bg-orb:nth-child(3) {
+                width: 300px;
+                height: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 1.75rem;
+            }
+            
+            .category-filters {
+                margin-right: -1rem;
+                padding-left: 0;
+                padding-right: 1rem;
+            }
+            
+            .stats-grid {
+                gap: 0.75rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .item-card {
+            animation: slideIn 0.3s ease-out backwards;
+        }
+
+        .item-card:nth-child(1) { animation-delay: 0.05s; }
+        .item-card:nth-child(2) { animation-delay: 0.1s; }
+        .item-card:nth-child(3) { animation-delay: 0.15s; }
+        .item-card:nth-child(4) { animation-delay: 0.2s; }
+        .item-card:nth-child(5) { animation-delay: 0.25s; }
+        .item-card:nth-child(6) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- Background animation orbs -->
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+
+    <div class="admin-bar">
+        🔧 ADMIN MODE - Content is editable
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <!-- Simple RH monogram -->
+                    <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background square with rounded corners -->
+                        <rect x="1" y="1" width="48" height="48" rx="4" stroke="var(--accent)" stroke-width="2" fill="none" opacity="0.5"/>
+                        <!-- R -->
+                        <path d="M12 35V15H20C23 15 25 17 25 20C25 23 23 25 20 25H16M16 25L24 35" 
+                              stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- H -->
+                        <path d="M28 15V35M28 25H38M38 15V35" 
+                              stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h1 class="logo-text">Rob<span>Hansen</span></h1>
+            </div>
+            <p class="tagline">Engineering • Automation • Innovation <span class="mono">// Code | Create | Control</span></p>
+        </header>
+
+        <nav>
+            <a href="#" class="nav-item active" data-section="projects">Projects</a>
+            <a href="#" class="nav-item" data-section="videos">Videos</a>
+            <a href="#" class="nav-item" data-section="about">About</a>
+        </nav>
+
+        <!-- Projects Section -->
+        <section class="section active" id="projects">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="indicator"></span>
+                    Projects
+                </h2>
+                <div class="category-filters" id="project-filters">
+                    <button class="category-btn active" data-category="all">All</button>
+                </div>
+            </div>
+
+            <!-- Admin Controls for Projects -->
+            <div class="admin-controls">
+                <div class="tag-manager">
+                    <h3>Manage Project Tags</h3>
+                    <div class="tag-list" id="project-tags">
+                        <span class="tag">BAS <span class="remove" onclick="removeTag('projects', this)">×</span></span>
+                        <span class="tag">DDC <span class="remove" onclick="removeTag('projects', this)">×</span></span>
+                        <span class="tag">IoT <span class="remove" onclick="removeTag('projects', this)">×</span></span>
+                        <span class="tag">HVAC <span class="remove" onclick="removeTag('projects', this)">×</span></span>
+                        <span class="tag">Energy <span class="remove" onclick="removeTag('projects', this)">×</span></span>
+                        <span class="tag">Tools <span class="remove" onclick="removeTag('projects', this)">×</span></span>
+                    </div>
+                    <div class="tag-input-group">
+                        <input type="text" class="tag-input" placeholder="Add new tag..." id="project-tag-input">
+                        <button class="btn" onclick="addTag('projects')">Add Tag</button>
+                    </div>
+                </div>
+
+                <div class="add-item-form">
+                    <h3 style="margin-bottom: 1rem; color: var(--fg-dim);">Add New Project</h3>
+                    <div class="form-group">
+                        <label>Project Name</label>
+                        <input type="text" class="form-input" id="project-name" placeholder="e.g., BAS-Controller">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub URL</label>
+                        <input type="text" class="form-input" id="project-url" placeholder="https://github.com/username/repo">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-input" id="project-desc" placeholder="Brief description...">
+                    </div>
+                    <div class="form-group">
+                        <label>Select Tags</label>
+                        <div class="tag-selector" id="project-tag-selector"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Info (comma-separated)</label>
+                        <input type="text" class="form-input" id="project-meta" placeholder="e.g., Python, MIT, v1.0">
+                    </div>
+                    <button class="btn" onclick="addProject()">Add Project</button>
+                </div>
+            </div>
+
+            <div class="items-grid" id="projects-grid">
+                <!-- Example projects with building automation theme -->
+                <a href="https://github.com/yourusername/bas-controller" class="item-card" data-tags="bas,hvac,iot">
+                    <div class="item-header">
+                        <span class="item-title">BAS-Controller</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <div class="item-tags">
+                        <span class="item-tag">BAS</span>
+                        <span class="item-tag">HVAC</span>
+                        <span class="item-tag">IoT</span>
+                    </div>
+                    <p class="item-description">
+                        Open-source building automation system controller with Modbus and BACnet support. Real-time monitoring and control.
+                    </p>
+                    <div class="item-meta">
+                        <span>Python</span>
+                        <span>MIT</span>
+                        <span>v2.4.1</span>
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn btn-secondary" onclick="editItem(this)">Edit</button>
+                        <button class="btn btn-secondary" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </a>
+
+                <a href="https://github.com/yourusername/energy-dashboard" class="item-card" data-tags="energy,tools,bas">
+                    <div class="item-header">
+                        <span class="item-title">Energy Dashboard</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <div class="item-tags">
+                        <span class="item-tag">Energy</span>
+                        <span class="item-tag">Tools</span>
+                        <span class="item-tag">BAS</span>
+                    </div>
+                    <p class="item-description">
+                        Real-time energy monitoring dashboard for commercial buildings. Integrates with major BMS platforms.
+                    </p>
+                    <div class="item-meta">
+                        <span>React</span>
+                        <span>Apache 2.0</span>
+                        <span>v1.8.0</span>
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn btn-secondary" onclick="editItem(this)">Edit</button>
+                        <button class="btn btn-secondary" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </a>
+
+                <a href="https://github.com/yourusername/modbus-tools" class="item-card" data-tags="ddc,tools">
+                    <div class="item-header">
+                        <span class="item-title">Modbus Tools</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <div class="item-tags">
+                        <span class="item-tag">DDC</span>
+                        <span class="item-tag">Tools</span>
+                    </div>
+                    <p class="item-description">
+                        Comprehensive Modbus RTU/TCP toolkit for testing and debugging DDC systems.
+                    </p>
+                    <div class="item-meta">
+                        <span>Rust</span>
+                        <span>MIT</span>
+                        <span>v0.9.2</span>
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn btn-secondary" onclick="editItem(this)">Edit</button>
+                        <button class="btn btn-secondary" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Videos Section -->
+        <section class="section" id="videos">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="indicator"></span>
+                    Videos
+                </h2>
+                <div class="category-filters" id="video-filters">
+                    <button class="category-btn active" data-category="all">All</button>
+                </div>
+            </div>
+
+            <!-- Admin Controls for Videos -->
+            <div class="admin-controls">
+                <div class="tag-manager">
+                    <h3>Manage Video Tags</h3>
+                    <div class="tag-list" id="video-tags">
+                        <span class="tag">Tutorial <span class="remove" onclick="removeTag('videos', this)">×</span></span>
+                        <span class="tag">Demo <span class="remove" onclick="removeTag('videos', this)">×</span></span>
+                        <span class="tag">Setup <span class="remove" onclick="removeTag('videos', this)">×</span></span>
+                        <span class="tag">Integration <span class="remove" onclick="removeTag('videos', this)">×</span></span>
+                    </div>
+                    <div class="tag-input-group">
+                        <input type="text" class="tag-input" placeholder="Add new tag..." id="video-tag-input">
+                        <button class="btn" onclick="addTag('videos')">Add Tag</button>
+                    </div>
+                </div>
+
+                <div class="add-item-form">
+                    <h3 style="margin-bottom: 1rem; color: var(--fg-dim);">Add New Video</h3>
+                    <div class="form-group">
+                        <label>Video Title</label>
+                        <input type="text" class="form-input" id="video-name" placeholder="e.g., BACnet Setup Guide">
+                    </div>
+                    <div class="form-group">
+                        <label>YouTube URL</label>
+                        <input type="text" class="form-input" id="video-url" placeholder="https://youtube.com/watch?v=...">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-input" id="video-desc" placeholder="Brief description...">
+                    </div>
+                    <div class="form-group">
+                        <label>Select Tags</label>
+                        <div class="tag-selector" id="video-tag-selector"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Video Info <span style="color: var(--category); font-size: 0.85rem;">(optional - comma-separated)</span></label>
+                        <input type="text" class="form-input" id="video-meta" placeholder="e.g., 15:30, 5.2K views, 2 days ago">
+                        <small style="color: var(--category); display: block; margin-top: 0.25rem;">Leave blank to show no metadata, or add any info you want</small>
+                    </div>
+                    <button class="btn" onclick="addVideo()">Add Video</button>
+                </div>
+            </div>
+
+            <div class="items-grid" id="videos-grid">
+                <!-- Example videos with building automation theme -->
+                <a href="https://youtube.com/watch?v=example1" class="item-card" data-tags="tutorial,setup">
+                    <div class="item-header">
+                        <span class="item-title">▶ BACnet Setup Guide</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <div class="item-tags">
+                        <span class="item-tag">Tutorial</span>
+                        <span class="item-tag">Setup</span>
+                    </div>
+                    <p class="item-description">
+                        Complete walkthrough of setting up BACnet IP controllers in a commercial building environment.
+                    </p>
+                    <div class="item-meta">
+                        <span>25:45</span>
+                        <span>12K views</span>
+                        <span>1 week ago</span>
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn btn-secondary" onclick="editItem(this)">Edit</button>
+                        <button class="btn btn-secondary" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </a>
+
+                <a href="https://youtube.com/watch?v=example2" class="item-card" data-tags="demo,integration">
+                    <div class="item-header">
+                        <span class="item-title">▶ HVAC Integration Demo</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <div class="item-tags">
+                        <span class="item-tag">Demo</span>
+                        <span class="item-tag">Integration</span>
+                    </div>
+                    <p class="item-description">
+                        Live demonstration of integrating HVAC systems with modern IoT platforms and cloud analytics.
+                    </p>
+                    <div class="item-meta">
+                        <span>18:30</span>
+                        <span>8.5K views</span>
+                        <span>2 weeks ago</span>
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn btn-secondary" onclick="editItem(this)">Edit</button>
+                        <button class="btn btn-secondary" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="section" id="about">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="indicator"></span>
+                    About
+                </h2>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">200+</div>
+                    <div class="stat-label">Buildings Automated</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">50M+</div>
+                    <div class="stat-label">Sq Ft Managed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">30%</div>
+                    <div class="stat-label">Avg Energy Savings</div>
+                </div>
+            </div>
+
+            <div style="max-width: 800px; margin: 3rem auto; text-align: center;">
+                <p style="line-height: 1.8; color: var(--fg-dim); margin-bottom: 1.5rem;">
+                    Specializing in building automation systems, DDC programming, and IoT integration for commercial and industrial facilities. 
+                    Creating open-source tools and solutions that bridge the gap between traditional BAS and modern cloud technologies.
+                </p>
+                <p style="line-height: 1.8; color: var(--fg-dim);">
+                    Certified in BACnet, Modbus, KNX, and major BMS platforms including Niagara, Schneider, Johnson Controls, and Honeywell.
+                </p>
+            </div>
+
+            <div style="margin-top: 3rem; padding: 2rem; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border);">
+                <h3 style="margin-bottom: 1rem; color: var(--accent);">Core Technologies</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                    <span class="tag">BACnet/IP</span>
+                    <span class="tag">Modbus RTU/TCP</span>
+                    <span class="tag">KNX</span>
+                    <span class="tag">MQTT</span>
+                    <span class="tag">Niagara Framework</span>
+                    <span class="tag">Node-RED</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">InfluxDB</span>
+                    <span class="tag">Grafana</span>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p style="font-family: 'JetBrains Mono', monospace; color: var(--accent);">
+                // Building smarter buildings, one line of code at a time
+            </p>
+            <div class="social-links">
+                <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+                <a href="https://youtube.com/@yourchannel" target="_blank">YouTube</a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+                <a href="mailto:your@email.com">Email</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+        <svg class="icon" id="theme-icon" fill="currentColor" viewBox="0 0 24 24">
+            <!-- Sun icon (for dark mode - click to go light) -->
+            <path d="M12 17.5C9.5 17.5 7.5 15.5 7.5 13S9.5 8.5 12 8.5 16.5 10.5 16.5 13 14.5 17.5 12 17.5M12 7C8.7 7 6 9.7 6 13S8.7 19 12 19 18 16.3 18 13 15.3 7 12 7M12 2L14.4 6.4L19 5.7L16.2 9.8L18.6 14L14 12.7L10 15.5L10.7 11L7 7.3L11.6 6.6L12 2Z"/>
+        </svg>
+    </div>
+
+    <!-- Admin Toggle Button -->
+    <div class="admin-toggle" onclick="toggleAdminMode()" title="Toggle Admin Mode">
+        <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.08-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.64-.07.97c0 .33.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59 1.69-.98l2.49 1c.22.08.49 0 .61-.22l2-3.46c.13-.22.07-.49-.12-.64l-2.11-1.63Z"/>
+        </svg>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-secondary); border: 1px solid var(--accent); padding: 2rem; border-radius: 8px; max-width: 400px; width: 90%;">
+            <h3 style="margin-bottom: 1rem; color: var(--accent);">Admin Authentication</h3>
+            <p style="color: var(--fg-dim); margin-bottom: 1.5rem; font-size: 0.9rem;">Enter password to access admin mode</p>
+            <input type="password" id="adminPassword" class="form-input" placeholder="Password" style="margin-bottom: 1rem;" onkeypress="if(event.key==='Enter') checkPassword()">
+            <div id="passwordError" style="color: var(--warning); font-size: 0.85rem; margin-bottom: 1rem; display: none;">Incorrect password</div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" onclick="checkPassword()">Unlock</button>
+                <button class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
+            </div>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                <p style="color: var(--fg-dim); font-size: 0.8rem;">
+                    <strong>First time?</strong> Set your password with:<br>
+                    <code style="color: var(--accent);">localStorage.setItem('adminPass', 'yourpassword')</code><br>
+                    in the browser console (F12)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let projectTags = ['BAS', 'DDC', 'IoT', 'HVAC', 'Energy', 'Tools'];
+        let videoTags = ['Tutorial', 'Demo', 'Setup', 'Integration'];
+        let adminMode = false;
+        let isAuthenticated = false;
+
+        // Theme management
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeIcon(isLight);
+        }
+
+        function updateThemeIcon(isLight) {
+            const icon = document.getElementById('theme-icon');
+            if (isLight) {
+                // Moon icon (for light mode - click to go dark)
+                icon.innerHTML = '<path d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.64 6.35,17.66C9.37,20.67 14.19,20.78 17.33,17.97Z"/>';
+            } else {
+                // Sun icon (for dark mode - click to go light)
+                icon.innerHTML = '<path d="M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,2L14.39,5.42C13.65,5.15 12.84,5 12,5C11.16,5 10.35,5.15 9.61,5.42L12,2M3.34,7L7.5,6.65C6.9,7.16 6.36,7.78 5.94,8.5C5.5,9.24 5.25,10 5.11,10.79L3.34,7M3.36,17L5.12,13.23C5.26,14 5.53,14.78 5.95,15.5C6.37,16.24 6.91,16.86 7.5,17.37L3.36,17M20.65,7L18.88,10.79C18.74,10 18.47,9.23 18.05,8.5C17.63,7.78 17.1,7.15 16.5,6.64L20.65,7M20.64,17L16.5,17.36C17.09,16.85 17.62,16.22 18.04,15.5C18.46,14.77 18.73,14 18.87,13.21L20.64,17Z"/>';
+            }
+        }
+
+        // Load theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            updateThemeIcon(true);
+        }
+
+        // Toggle admin mode
+        function toggleAdminMode() {
+            if (!adminMode) {
+                // Trying to enter admin mode
+                if (!localStorage.getItem('adminPass')) {
+                    // No password set yet
+                    alert('No admin password set. Please set one using the browser console:\nlocalStorage.setItem(\'adminPass\', \'yourpassword\')');
+                    console.log('%cSet admin password with: localStorage.setItem(\'adminPass\', \'yourpassword\')', 'color: #00d4aa; font-size: 14px;');
+                    return;
+                }
+                
+                if (!isAuthenticated) {
+                    // Show password modal
+                    document.getElementById('passwordModal').style.display = 'flex';
+                    document.getElementById('adminPassword').focus();
+                    return;
+                }
+                
+                // Already authenticated, enter admin mode
+                enableAdminMode();
+            } else {
+                // Exiting admin mode
+                if (confirm('Exit admin mode?')) {
+                    disableAdminMode();
+                }
+            }
+        }
+
+        function enableAdminMode() {
+            adminMode = true;
+            document.body.classList.add('admin-mode');
+            document.querySelector('.admin-toggle').classList.add('active');
+            closePasswordModal();
+        }
+
+        function disableAdminMode() {
+            adminMode = false;
+            isAuthenticated = false; // Require re-authentication next time
+            document.body.classList.remove('admin-mode');
+            document.querySelector('.admin-toggle').classList.remove('active');
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('adminPassword');
+            const storedPass = localStorage.getItem('adminPass');
+            
+            if (input.value === storedPass) {
+                isAuthenticated = true;
+                enableAdminMode();
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+                input.value = '';
+                setTimeout(() => {
+                    document.getElementById('passwordError').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        // Auto-lock admin mode after 30 minutes of inactivity
+        let adminTimeout;
+        function resetAdminTimeout() {
+            if (adminMode) {
+                clearTimeout(adminTimeout);
+                adminTimeout = setTimeout(() => {
+                    if (adminMode) {
+                        alert('Admin session expired due to inactivity');
+                        disableAdminMode();
+                    }
+                }, 30 * 60 * 1000); // 30 minutes
+            }
+        }
+
+        // Track activity to reset timeout
+        document.addEventListener('click', resetAdminTimeout);
+        document.addEventListener('keypress', resetAdminTimeout);
+
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.section');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetSection = item.dataset.section;
+                
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === targetSection) {
+                        section.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Tag management
+        function removeTag(section, element) {
+            const tag = element.parentElement;
+            tag.remove();
+            updateTagSelectors();
+            updateFilters();
+        }
+
+        function addTag(section) {
+            const input = document.getElementById(`${section}-tag-input`);
+            const value = input.value.trim();
+            
+            if (value) {
+                const tagList = document.getElementById(`${section}-tags`);
+                const newTag = document.createElement('span');
+                newTag.className = 'tag';
+                newTag.innerHTML = `${value} <span class="remove" onclick="removeTag('${section}', this)">×</span>`;
+                tagList.appendChild(newTag);
+                
+                input.value = '';
+                updateTagSelectors();
+                updateFilters();
+            }
+        }
+
+        // Update tag selectors in forms
+        function updateTagSelectors() {
+            // Update project tag selector
+            const projectSelector = document.getElementById('project-tag-selector');
+            const projectTags = Array.from(document.querySelectorAll('#project-tags .tag')).map(tag => 
+                tag.textContent.replace(' ×', '').trim()
+            );
+            
+            projectSelector.innerHTML = projectTags.map(tag => 
+                `<span class="tag-option" onclick="toggleTagSelection(this)">${tag}</span>`
+            ).join('');
+            
+            // Update video tag selector
+            const videoSelector = document.getElementById('video-tag-selector');
+            const videoTags = Array.from(document.querySelectorAll('#video-tags .tag')).map(tag => 
+                tag.textContent.replace(' ×', '').trim()
+            );
+            
+            videoSelector.innerHTML = videoTags.map(tag => 
+                `<span class="tag-option" onclick="toggleTagSelection(this)">${tag}</span>`
+            ).join('');
+        }
+
+        // Toggle tag selection in forms
+        function toggleTagSelection(element) {
+            element.classList.toggle('selected');
+        }
+
+        // Update category filters
+        function updateFilters() {
+            // Update project filters
+            const projectTags = Array.from(document.querySelectorAll('#project-tags .tag')).map(tag => 
+                tag.textContent.replace(' ×', '').trim()
+            );
+            
+            const projectFilters = document.getElementById('project-filters');
+            projectFilters.innerHTML = '<button class="category-btn active" data-category="all">All</button>' +
+                projectTags.map(tag => 
+                    `<button class="category-btn" data-category="${tag.toLowerCase()}">${tag}</button>`
+                ).join('');
+            
+            // Update video filters
+            const videoTags = Array.from(document.querySelectorAll('#video-tags .tag')).map(tag => 
+                tag.textContent.replace(' ×', '').trim()
+            );
+            
+            const videoFilters = document.getElementById('video-filters');
+            videoFilters.innerHTML = '<button class="category-btn active" data-category="all">All</button>' +
+                videoTags.map(tag => 
+                    `<button class="category-btn" data-category="${tag.toLowerCase()}">${tag}</button>`
+                ).join('');
+            
+            // Re-attach filter listeners
+            attachFilterListeners();
+        }
+
+        // Attach filter listeners
+        function attachFilterListeners() {
+            document.querySelectorAll('.category-filters').forEach(filterGroup => {
+                const buttons = filterGroup.querySelectorAll('.category-btn');
+                const section = filterGroup.closest('.section');
+                const items = section.querySelectorAll('.item-card');
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const category = btn.dataset.category;
+                        
+                        buttons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        items.forEach(item => {
+                            if (category === 'all') {
+                                item.style.display = 'block';
+                            } else {
+                                const itemTags = item.dataset.tags ? item.dataset.tags.toLowerCase().split(',') : [];
+                                if (itemTags.includes(category)) {
+                                    item.style.display = 'block';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        // Add new project
+        function addProject() {
+            const name = document.getElementById('project-name').value;
+            const url = document.getElementById('project-url').value;
+            const desc = document.getElementById('project-desc').value;
+            const meta = document.getElementById('project-meta').value;
+            const selectedTags = Array.from(document.querySelectorAll('#project-tag-selector .tag-option.selected'))
+                .map(tag => tag.textContent);
+            
+            if (name && url) {
+                const grid = document.getElementById('projects-grid');
+                const newCard = document.createElement('a');
+                newCard.href = url;
+                newCard.className = 'item-card';
+                newCard.target = '_blank';
+                newCard.dataset.tags = selectedTags.map(t => t.toLowerCase()).join(',');
+                
+                newCard.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-title">${name}</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <div class="item-tags">
+                        ${selectedTags.map(tag => `<span class="item-tag">${tag}</span>`).join('')}
+                    </div>
+                    <p class="item-description">${desc}</p>
+                    <div class="item-meta">
+                        ${meta.split(',').map(m => `<span>${m.trim()}</span>`).join('')}
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn btn-secondary" onclick="editItem(this)">Edit</button>
+                        <button class="btn btn-secondary" onclick="removeItem(this)">Remove</button>
+                    </div>
+                `;
+                
+                grid.appendChild(newCard);
+                
+                // Clear form
+                document.getElementById('project-name').value = '';
+                document.getElementById('project-url').value = '';
+                document.getElementById('project-desc').value = '';
+                document.getElementById('project-meta').value = '';
+                document.querySelectorAll('#project-tag-selector .tag-option').forEach(tag => 
+                    tag.classList.remove('selected')
+                );
+            }
+        }
+
+        // Add new video
+        function addVideo() {
+            const name = document.getElementById('video-name').value;
+            const url = document.getElementById('video-url').value;
+            const desc = document.getElementById('video-desc').value;
+            const meta = document.getElementById('video-meta').value;
+            const selectedTags = Array.from(document.querySelectorAll('#video-tag-selector .tag-option.selected'))
+                .map(tag => tag.textContent);
+            
+            if (name && url) {
+                const grid = document.getElementById('videos-grid');
+                const newCard = document.createElement('a');
+                newCard.href = url;
+                newCard.className = 'item-card';
+                newCard.target = '_blank';
+                newCard.dataset.tags = selectedTags.map(t => t.toLowerCase()).join(',');
+                
+                // Build metadata HTML only if meta field has content
+                let metaHTML = '';
+                if (meta && meta.trim()) {
+                    const metaItems = meta.split(',').map(m => `<span>${m.trim()}</span>`).join('');
+                    metaHTML = `<div class="item-meta">${metaItems}</div>`;
+                }
+                
+                newCard.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-title">▶ ${name}</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <div class="item-tags">
+                        ${selectedTags.map(tag => `<span class="item-tag">${tag}</span>`).join('')}
+                    </div>
+                    <p class="item-description">${desc}</p>
+                    ${metaHTML}
+                    <div class="item-controls">
+                        <button class="btn btn-secondary" onclick="editItem(this)">Edit</button>
+                        <button class="btn btn-secondary" onclick="removeItem(this)">Remove</button>
+                    </div>
+                `;
+                
+                grid.appendChild(newCard);
+                
+                // Clear form
+                document.getElementById('video-name').value = '';
+                document.getElementById('video-url').value = '';
+                document.getElementById('video-desc').value = '';
+                document.getElementById('video-meta').value = '';
+                document.querySelectorAll('#video-tag-selector .tag-option').forEach(tag => 
+                    tag.classList.remove('selected')
+                );
+            }
+        }
+
+        // Remove item
+        function removeItem(button) {
+            if (confirm('Are you sure you want to remove this item?')) {
+                button.closest('.item-card').remove();
+            }
+        }
+
+        // Edit item (simplified - in production would open edit dialog)
+        function editItem(button) {
+            alert('Edit functionality would open a dialog to modify this item.');
+        }
+
+        // Initialize
+        updateTagSelectors();
+        updateFilters();
+        attachFilterListeners();
+
+        // Keyboard shortcut for admin mode (Ctrl/Cmd + Shift + A)
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                toggleAdminMode();
+            }
+        });
+    </script>
+</body>
+</html>
