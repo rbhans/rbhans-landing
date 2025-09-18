@@ -2525,7 +2525,7 @@
         document.querySelectorAll('.category-filters').forEach(filterGroup => {
             const buttons = filterGroup.querySelectorAll('.category-btn');
             const section = filterGroup.closest('.section');
-            const items = section.querySelectorAll('.item-card');
+            const items = section.querySelectorAll('.item-card, .video-card');
 
             buttons.forEach(btn => {
                 btn.addEventListener('click', () => {
