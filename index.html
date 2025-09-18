@@ -1135,6 +1135,214 @@
             border-radius: 4px;
         }
 
+        /* Video Card Styles */
+        .video-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: all 0.2s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.2s;
+        }
+
+        .video-card:hover {
+            border-color: var(--accent-dim);
+            transform: translateY(-2px);
+        }
+
+        .video-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .video-embed-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .video-thumbnail:hover {
+            transform: scale(1.05);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-overlay:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-button:hover {
+            background: var(--accent-dim);
+            transform: scale(1.1);
+        }
+
+        .play-button::before {
+            content: '▶';
+            margin-left: 3px;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .video-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--fg);
+            margin: 0 0 0.5rem 0;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-channel {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .video-description {
+            color: var(--fg-dim);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .video-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .video-tag {
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: rgba(217, 119, 87, 0.1);
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--category);
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .video-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .video-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            background: var(--bg-secondary);
+            color: var(--fg-dim);
+        }
+
+        .video-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            background: var(--bg-secondary);
+            color: var(--warning);
+            font-size: 0.9rem;
+        }
+
         /* Responsive Kanban */
         @media (max-width: 768px) {
             .kanban-board {
@@ -1167,6 +1375,25 @@
 
             .form-actions button {
                 width: 100%;
+            }
+
+            .video-embed-container {
+                height: 180px;
+            }
+
+            .play-button {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .video-info {
+                padding: 1.25rem;
+            }
+
+            .video-meta {
+                flex-direction: column;
+                gap: 0.5rem;
             }
         }
     </style>
@@ -1361,34 +1588,11 @@
             </div>
 
             <div class="items-grid" id="videos-grid">
-                <!-- 
-                ==========================================
-                VIDEO TEMPLATE - Copy this block for each new video:
-                ==========================================
-                
-                <a href="YOUR_YOUTUBE_URL" class="item-card" data-tags="tag1,tag2" target="_blank">
-                    <div class="item-header">
-                        <span class="item-title">▶ Video Title</span>
-                        <span class="status-indicator status-online"></span>
-                    </div>
-                    <div class="item-tags">
-                        <span class="item-tag">TAG1</span>
-                        <span class="item-tag">TAG2</span>
-                    </div>
-                    <p class="item-description">
-                        Your video description here
-                    </p>
-                    <div class="item-meta">
-                        <span>Duration</span>
-                        <span>Views</span>
-                        <span>Date</span>
-                    </div>
-                </a>
-                
-                Note: The item-meta div is optional - remove it if you don't have this info
-                ==========================================
-                -->
-        </div>
+                <!-- Videos will be automatically loaded from YouTube API -->
+                <div class="video-loading">
+                    <span>Loading videos...</span>
+                </div>
+            </div>
         </section>
 
         <!-- Tasks Section -->
@@ -1620,6 +1824,233 @@
         let isAdmin = false;
         let tasks = [];
         let currentEditingTask = null;
+
+        // YouTube API Configuration
+        const YOUTUBE_API_KEY = 'AIzaSyDGaJ5JDQei9myw3cBrU1Qn7o4pnj4A0CQ';
+        const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
+
+        // Video Configuration - Add your YouTube URLs here
+        const videosConfig = [
+            {
+                url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // Example - replace with your videos
+                tags: ['demo', 'tutorial'],
+                customDescription: '' // Optional override
+            }
+            // Add more videos here
+        ];
+
+        // Video metadata cache
+        let videoMetadata = new Map();
+
+        // YouTube Helper Functions
+        function extractVideoId(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function formatDuration(duration) {
+            // Convert ISO 8601 duration (PT4M13S) to readable format (4:13)
+            const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+            const hours = parseInt(match[1]) || 0;
+            const minutes = parseInt(match[2]) || 0;
+            const seconds = parseInt(match[3]) || 0;
+
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function formatViewCount(count) {
+            const num = parseInt(count);
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        function formatPublishDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 7) {
+                return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            } else if (diffDays < 30) {
+                const weeks = Math.floor(diffDays / 7);
+                return `${weeks} week${weeks !== 1 ? 's' : ''} ago`;
+            } else if (diffDays < 365) {
+                const months = Math.floor(diffDays / 30);
+                return `${months} month${months !== 1 ? 's' : ''} ago`;
+            } else {
+                const years = Math.floor(diffDays / 365);
+                return `${years} year${years !== 1 ? 's' : ''} ago`;
+            }
+        }
+
+        async function fetchVideoMetadata(videoId) {
+            try {
+                const url = `${YOUTUBE_API_BASE}/videos?id=${videoId}&part=snippet,statistics,contentDetails&key=${YOUTUBE_API_KEY}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.items || data.items.length === 0) {
+                    throw new Error('Video not found');
+                }
+
+                const video = data.items[0];
+                return {
+                    id: videoId,
+                    title: video.snippet.title,
+                    description: video.snippet.description,
+                    channelTitle: video.snippet.channelTitle,
+                    publishedAt: video.snippet.publishedAt,
+                    thumbnails: video.snippet.thumbnails,
+                    duration: video.contentDetails.duration,
+                    viewCount: video.statistics.viewCount,
+                    likeCount: video.statistics.likeCount || '0'
+                };
+            } catch (error) {
+                console.error('Error fetching video metadata:', error);
+                return null;
+            }
+        }
+
+        async function loadAllVideoMetadata() {
+            const promises = videosConfig.map(async (videoConfig) => {
+                const videoId = extractVideoId(videoConfig.url);
+                if (!videoId) {
+                    console.warn('Invalid YouTube URL:', videoConfig.url);
+                    return null;
+                }
+
+                // Check cache first
+                const cacheKey = `video_${videoId}`;
+                const cached = sessionStorage.getItem(cacheKey);
+
+                if (cached) {
+                    const metadata = JSON.parse(cached);
+                    videoMetadata.set(videoId, { ...metadata, config: videoConfig });
+                    return metadata;
+                }
+
+                // Fetch from API
+                const metadata = await fetchVideoMetadata(videoId);
+                if (metadata) {
+                    // Cache for this session
+                    sessionStorage.setItem(cacheKey, JSON.stringify(metadata));
+                    videoMetadata.set(videoId, { ...metadata, config: videoConfig });
+                }
+
+                return metadata;
+            });
+
+            const results = await Promise.all(promises);
+            return results.filter(result => result !== null);
+        }
+
+        // Video Management Class
+        class VideoManager {
+            constructor() {
+                this.videosGrid = document.getElementById('videos-grid');
+                this.loadedPlayers = new Set();
+            }
+
+            async initialize() {
+                await loadAllVideoMetadata();
+                this.renderVideos();
+            }
+
+            renderVideos() {
+                // Clear existing content
+                this.videosGrid.innerHTML = '';
+
+                videoMetadata.forEach((video, videoId) => {
+                    const videoCard = this.createVideoCard(video);
+                    this.videosGrid.appendChild(videoCard);
+                });
+            }
+
+            createVideoCard(video) {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.dataset.tags = video.config.tags.join(',');
+
+                const thumbnail = video.thumbnails.maxres || video.thumbnails.high || video.thumbnails.medium;
+                const customDesc = video.config.customDescription || video.description;
+
+                card.innerHTML = `
+                    <div class="video-embed-container">
+                        <img src="${thumbnail.url}" alt="${this.escapeHtml(video.title)}" class="video-thumbnail">
+                        <div class="video-overlay" onclick="videoManager.loadVideo('${video.id}')">
+                            <button class="play-button" aria-label="Play video"></button>
+                        </div>
+                        <div class="video-duration">${formatDuration(video.duration)}</div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">${this.escapeHtml(video.title)}</h3>
+                        <div class="video-channel">${this.escapeHtml(video.channelTitle)}</div>
+                        <div class="video-tags">
+                            ${video.config.tags.map(tag => `<span class="video-tag">${tag}</span>`).join('')}
+                        </div>
+                        <p class="video-description">${this.escapeHtml(customDesc)}</p>
+                        <div class="video-meta">
+                            <span>👁 ${formatViewCount(video.viewCount)} views</span>
+                            <span>📅 ${formatPublishDate(video.publishedAt)}</span>
+                            <span>⏱ ${formatDuration(video.duration)}</span>
+                        </div>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            loadVideo(videoId) {
+                if (this.loadedPlayers.has(videoId)) return;
+
+                // Find the container for this video
+                const container = document.querySelector(`[onclick="videoManager.loadVideo('${videoId}')"]`);
+                if (!container) return;
+
+                // Replace thumbnail with iframe
+                container.innerHTML = `
+                    <iframe
+                        class="video-player"
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                `;
+
+                this.loadedPlayers.add(videoId);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize video manager
+        let videoManager = null;
+
+        function initializeVideos() {
+            if (!videoManager) {
+                videoManager = new VideoManager();
+                videoManager.initialize();
+            }
+        }
 
         // Kanban functionality
         class KanbanBoard {
@@ -2071,9 +2502,11 @@
                     section.classList.remove('active');
                     if (section.id === targetSection) {
                         section.classList.add('active');
-                        // Initialize Kanban board when Tasks section is shown
+                        // Initialize sections when shown
                         if (targetSection === 'tasks') {
                             initializeKanban();
+                        } else if (targetSection === 'videos') {
+                            initializeVideos();
                         }
                     }
                 });
