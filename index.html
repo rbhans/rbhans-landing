@@ -544,6 +544,47 @@
             color: var(--fg);
         }
 
+        /* Auth Toggle Button - matches theme toggle */
+        .auth-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            opacity: 0.8;
+        }
+
+        .auth-toggle:hover {
+            opacity: 1;
+            background: var(--hover);
+            border-color: var(--accent);
+        }
+
+        .auth-toggle.admin {
+            background: var(--accent);
+            border-color: var(--accent);
+            opacity: 1;
+        }
+
+        .auth-toggle.admin .icon {
+            color: var(--bg);
+        }
+
+        .auth-toggle .icon {
+            width: 24px;
+            height: 24px;
+            color: var(--fg);
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -1343,6 +1384,336 @@
             font-size: 0.9rem;
         }
 
+        /* Wiki styles */
+        .wiki-container {
+            display: flex;
+            gap: 20px;
+            height: calc(100vh - 200px);
+            max-height: 800px;
+        }
+
+        .wiki-sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .wiki-content {
+            flex: 1;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .wiki-nav-item {
+            padding: 8px 12px;
+            margin: 4px 0;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+            font-size: 14px;
+            color: var(--fg);
+        }
+
+        .wiki-nav-item:hover {
+            background: var(--hover);
+        }
+
+        .wiki-nav-item.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .wiki-category {
+            font-weight: 600;
+            color: var(--fg);
+            margin: 16px 0 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .wiki-category:first-child {
+            margin-top: 0;
+        }
+
+        .wiki-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .wiki-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .wiki-btn.primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .wiki-btn.secondary {
+            background: var(--bg-secondary);
+            color: var(--fg);
+            border: 1px solid var(--border);
+        }
+
+        .wiki-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .wiki-editor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: none;
+        }
+
+        .wiki-editor.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wiki-editor-modal {
+            background: var(--bg);
+            border-radius: 12px;
+            width: 90vw;
+            height: 85vh;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .wiki-editor-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wiki-editor-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .wiki-editor-form {
+            width: 50%;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .wiki-editor-preview {
+            width: 50%;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--bg-secondary);
+        }
+
+        .wiki-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .wiki-form-label {
+            font-weight: 600;
+            color: var(--fg);
+            font-size: 14px;
+        }
+
+        .wiki-form-input, .wiki-form-select, .wiki-form-textarea {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--fg);
+            font-family: inherit;
+        }
+
+        .wiki-form-textarea {
+            flex: 1;
+            resize: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .wiki-content h1, .wiki-content h2, .wiki-content h3 {
+            color: var(--fg);
+            margin: 20px 0 10px 0;
+        }
+
+        .wiki-content h1 {
+            font-size: 28px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .wiki-content h2 {
+            font-size: 22px;
+        }
+
+        .wiki-content h3 {
+            font-size: 18px;
+        }
+
+        .wiki-content p {
+            line-height: 1.6;
+            margin: 12px 0;
+            color: var(--fg);
+        }
+
+        .wiki-content pre {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+
+        .wiki-content code {
+            background: var(--bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent);
+        }
+
+        .wiki-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--fg);
+        }
+
+        .wiki-content ul, .wiki-content ol {
+            margin: 12px 0;
+            padding-left: 24px;
+            color: var(--fg);
+        }
+
+        .wiki-content li {
+            margin: 6px 0;
+        }
+
+        .wiki-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 16px 0;
+            padding: 12px 20px;
+            background: var(--bg);
+            border-radius: 0 6px 6px 0;
+            color: var(--fg-dim);
+        }
+
+        .wiki-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 12px 0;
+        }
+
+        .wiki-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .wiki-content a:hover {
+            text-decoration: underline;
+        }
+
+        .wiki-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .wiki-toolbar-btn {
+            padding: 6px 10px;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--fg);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .wiki-toolbar-btn:hover {
+            background: var(--hover);
+        }
+
+        @media (max-width: 768px) {
+            .wiki-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .wiki-sidebar {
+                width: 100%;
+                order: 2;
+                max-height: 200px;
+            }
+
+            .wiki-content {
+                order: 1;
+                min-height: 400px;
+            }
+
+            .wiki-editor-modal {
+                width: 95vw;
+                height: 95vh;
+            }
+
+            .wiki-editor-content {
+                flex-direction: column;
+            }
+
+            .wiki-editor-form, .wiki-editor-preview {
+                width: 100%;
+                height: 50%;
+            }
+
+            .wiki-editor-form {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+
         /* Responsive Kanban */
         @media (max-width: 768px) {
             .kanban-board {
@@ -1448,6 +1819,7 @@
             <a href="#" class="nav-item active" data-section="projects">Projects</a>
             <a href="#" class="nav-item" data-section="videos">Videos</a>
             <a href="#" class="nav-item" data-section="tasks">Tasks</a>
+            <a href="#" class="nav-item" data-section="wiki">Wiki</a>
             <a href="#" class="nav-item" data-section="about">About</a>
         </nav>
 
@@ -1606,10 +1978,6 @@
                     Tasks
                 </h2>
                 <div class="kanban-controls">
-                    <div id="auth-status" class="auth-status">
-                        <span id="auth-text">View Only</span>
-                        <button id="auth-btn" class="auth-btn">Admin Login</button>
-                    </div>
                     <button id="add-task-btn" class="add-task-btn" disabled>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
@@ -1701,6 +2069,129 @@
                     </div>
                     <div id="login-error" class="error-message" style="display: none;"></div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Wiki Section -->
+        <section class="section" id="wiki">
+            <div class="wiki-container">
+                <!-- Wiki Sidebar -->
+                <div class="wiki-sidebar">
+                    <div class="wiki-search">
+                        <input type="text" id="wiki-search" placeholder="Search wiki..." disabled>
+                    </div>
+
+                    <div class="wiki-nav" id="wiki-nav">
+                        <div class="wiki-loading">Loading pages...</div>
+                    </div>
+
+                    <div class="wiki-controls" id="wiki-controls" style="display: none;">
+                        <button class="wiki-btn" id="new-page-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            New Page
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Wiki Content -->
+                <div class="wiki-content">
+                    <div class="wiki-header">
+                        <h1 class="wiki-title" id="wiki-title">Welcome to the Wiki</h1>
+                        <div class="wiki-actions" id="wiki-actions" style="display: none;">
+                            <button class="wiki-btn" id="edit-page-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                                </svg>
+                                Edit
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="wiki-body" id="wiki-body">
+                        <div class="wiki-loading">Loading content...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wiki Editor Modal -->
+        <div id="wiki-editor-modal" class="modal">
+            <div class="modal-content wiki-editor-content">
+                <div class="modal-header">
+                    <h3 id="editor-title">Edit Page</h3>
+                    <button class="modal-close" id="editor-close">&times;</button>
+                </div>
+
+                <div class="editor-container">
+                    <div class="editor-tabs">
+                        <button class="editor-tab active" data-tab="edit">Edit</button>
+                        <button class="editor-tab" data-tab="preview">Preview</button>
+                    </div>
+
+                    <div class="editor-form">
+                        <form id="wiki-form">
+                            <div class="form-group">
+                                <label for="page-title">Title</label>
+                                <input type="text" id="page-title" required maxlength="100">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="page-slug">URL Slug</label>
+                                <input type="text" id="page-slug" required maxlength="100" pattern="[a-z0-9-]+">
+                                <small>Only lowercase letters, numbers, and hyphens</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="page-category">Category</label>
+                                <select id="page-category">
+                                    <option value="Getting Started">Getting Started</option>
+                                    <option value="Niagara">Niagara</option>
+                                    <option value="JCI Metasys">JCI Metasys</option>
+                                    <option value="Schneider">Schneider</option>
+                                    <option value="Troubleshooting">Troubleshooting</option>
+                                    <option value="Best Practices">Best Practices</option>
+                                </select>
+                            </div>
+
+                            <div class="editor-content">
+                                <div class="editor-pane active" id="edit-pane">
+                                    <div class="editor-toolbar">
+                                        <button type="button" class="toolbar-btn" data-action="bold" title="Bold">
+                                            <strong>B</strong>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" data-action="italic" title="Italic">
+                                            <em>I</em>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" data-action="link" title="Link">
+                                            🔗
+                                        </button>
+                                        <button type="button" class="toolbar-btn" data-action="code" title="Code">
+                                            &lt;&gt;
+                                        </button>
+                                        <button type="button" class="toolbar-btn" data-action="image" title="Image">
+                                            🖼️
+                                        </button>
+                                    </div>
+                                    <textarea id="page-content" placeholder="Write your content in Markdown..." rows="20"></textarea>
+                                </div>
+
+                                <div class="editor-pane" id="preview-pane">
+                                    <div class="preview-content" id="preview-content">
+                                        Preview will appear here...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" id="editor-cancel">Cancel</button>
+                                <button type="submit" id="save-page-btn">Save Page</button>
+                                <button type="button" id="delete-page-btn" style="display: none;">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1796,9 +2287,10 @@
                 // Turning complex systems into clear interfaces
             </p>
             <div class="social-links">
-                <a href="https://github.com/rbhans" target="_blank">GitHub</a>
-                <a href="https://www.youtube.com/@robhans11" target="_blank">YouTube</a>
-                <a href="mailto:rbhansen@protonmail.com">Email</a>
+                <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+                <a href="https://youtube.com/@yourchannel" target="_blank">YouTube</a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+                <a href="mailto:your@email.com">Email</a>
             </div>
         </footer>
     </div>
@@ -1806,11 +2298,25 @@
     <!-- Supabase SDK -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
+    <!-- Markdown and Syntax Highlighting -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
     <!-- Theme Toggle Button -->
     <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
         <svg class="icon" id="theme-icon" fill="currentColor" viewBox="0 0 24 24">
             <!-- Sun icon (for dark mode - click to go light) -->
             <path d="M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,2L14.39,5.42C13.65,5.15 12.84,5 12,5C11.16,5 10.35,5.15 9.61,5.42L12,2M3.34,7L7.5,6.65C6.9,7.16 6.36,7.78 5.94,8.5C5.5,9.24 5.25,10 5.11,10.79L3.34,7M3.36,17L5.12,13.23C5.26,14 5.53,14.78 5.95,15.5C6.37,16.24 6.91,16.86 7.5,17.37L3.36,17M20.65,7L18.88,10.79C18.74,10 18.47,9.23 18.05,8.5C17.63,7.78 17.1,7.15 16.5,6.64L20.65,7M20.64,17L16.5,17.36C17.09,16.85 17.62,16.22 18.04,15.5C18.46,14.77 18.73,14 18.87,13.21L20.64,17Z"/>
+        </svg>
+    </div>
+
+    <!-- Global Auth Toggle Button -->
+    <div class="auth-toggle" id="auth-toggle" onclick="globalAuth.handleAuthClick()" title="Admin Login">
+        <svg class="icon" id="auth-icon" fill="currentColor" viewBox="0 0 24 24">
+            <!-- User icon (logged out) -->
+            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
         </svg>
     </div>
 
@@ -1821,11 +2327,19 @@
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Global variables
+        // Global variables (legacy - will be replaced by globalAuth)
         let currentUser = null;
         let isAdmin = false;
         let tasks = [];
         let currentEditingTask = null;
+
+        // Initialize global auth when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            globalAuth = new GlobalAuth();
+        });
+
+        // Initialize wiki manager
+        let wikiManager = null;
 
         // YouTube API Configuration
         const YOUTUBE_API_KEY = 'AIzaSyDGaJ5JDQei9myw3cBrU1Qn7o4pnj4A0CQ';
@@ -1848,6 +2362,652 @@
 
         // Video metadata cache
         let videoMetadata = new Map();
+
+        // Global Authentication Management
+        class GlobalAuth {
+            constructor() {
+                this.currentUser = null;
+                this.isAdmin = false;
+                this.authToggle = null;
+                this.authIcon = null;
+                this.loginModal = null;
+                this.callbacks = [];
+
+                this.init();
+            }
+
+            init() {
+                this.authToggle = document.getElementById('auth-toggle');
+                this.authIcon = document.getElementById('auth-icon');
+                this.loginModal = document.getElementById('login-modal');
+
+                // Setup login form
+                this.setupLoginForm();
+
+                // Check initial auth status
+                this.checkAuthStatus();
+            }
+
+            setupLoginForm() {
+                const loginForm = document.getElementById('login-form');
+                const loginModalClose = document.getElementById('login-modal-close');
+                const loginCancelBtn = document.getElementById('login-cancel-btn');
+
+                loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+                loginModalClose.addEventListener('click', () => this.closeLoginModal());
+                loginCancelBtn.addEventListener('click', () => this.closeLoginModal());
+
+                // Close modal on outside click
+                window.addEventListener('click', (e) => {
+                    if (e.target === this.loginModal) this.closeLoginModal();
+                });
+            }
+
+            async checkAuthStatus() {
+                try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    this.currentUser = user;
+
+                    if (user) {
+                        this.isAdmin = user.email === 'rbhansen@protonmail.com';
+                    } else {
+                        this.isAdmin = false;
+                    }
+
+                    this.updateAuthUI();
+                    this.notifyCallbacks();
+                } catch (error) {
+                    console.error('Auth check error:', error);
+                    this.isAdmin = false;
+                    this.updateAuthUI();
+                    this.notifyCallbacks();
+                }
+            }
+
+            updateAuthUI() {
+                if (this.isAdmin) {
+                    this.authToggle.classList.add('admin');
+                    this.authToggle.title = 'Admin - Click to Logout';
+                    // Admin icon (shield)
+                    this.authIcon.innerHTML = '<path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11.5C15.4,11.4 16,11.9 16,12.5V16.5C16,17.1 15.6,17.5 15,17.5H9C8.4,17.5 8,17.1 8,16.5V12.5C8,11.9 8.4,11.4 9,11.5V10C9,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.2,9.2 10.2,10V11.5H13.8V10C13.8,9.2 12.8,8.2 12,8.2Z"/>';
+                } else {
+                    this.authToggle.classList.remove('admin');
+                    this.authToggle.title = 'Admin Login';
+                    // User icon (logged out)
+                    this.authIcon.innerHTML = '<path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>';
+                }
+            }
+
+            async handleAuthClick() {
+                if (this.currentUser && this.isAdmin) {
+                    // Logout
+                    await supabase.auth.signOut();
+                    this.currentUser = null;
+                    this.isAdmin = false;
+                    this.updateAuthUI();
+                    this.notifyCallbacks();
+                } else {
+                    // Show login modal
+                    this.openLoginModal();
+                }
+            }
+
+            openLoginModal() {
+                this.loginModal.classList.add('show');
+                document.getElementById('login-email').focus();
+            }
+
+            closeLoginModal() {
+                this.loginModal.classList.remove('show');
+                document.getElementById('login-form').reset();
+                document.getElementById('login-error').style.display = 'none';
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const errorDiv = document.getElementById('login-error');
+
+                try {
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                    if (error) throw error;
+
+                    // Check if user is admin
+                    if (data.user.email !== 'rbhansen@protonmail.com') {
+                        await supabase.auth.signOut();
+                        throw new Error('Access denied. Admin privileges required.');
+                    }
+
+                    this.currentUser = data.user;
+                    this.isAdmin = true;
+                    this.updateAuthUI();
+                    this.closeLoginModal();
+                    this.notifyCallbacks();
+
+                } catch (error) {
+                    errorDiv.textContent = error.message;
+                    errorDiv.style.display = 'block';
+                }
+            }
+
+            // Callback system for other components to listen to auth changes
+            onAuthChange(callback) {
+                this.callbacks.push(callback);
+            }
+
+            notifyCallbacks() {
+                this.callbacks.forEach(callback => {
+                    try {
+                        callback(this.isAdmin, this.currentUser);
+                    } catch (error) {
+                        console.error('Auth callback error:', error);
+                    }
+                });
+            }
+
+            // Getters for other components
+            get admin() {
+                return this.isAdmin;
+            }
+
+            get user() {
+                return this.currentUser;
+            }
+        }
+
+        // Initialize global auth
+        let globalAuth = null;
+
+        // Wiki Manager Class
+        class WikiManager {
+            constructor() {
+                this.currentPage = null;
+                this.pages = [];
+                this.categories = [];
+                this.isAdmin = false;
+                this.currentUser = null;
+                this.editor = null;
+                this.currentEditingPage = null;
+
+                // Get references to DOM elements
+                this.sidebar = null;
+                this.content = null;
+                this.controls = null;
+                this.editorModal = null;
+
+                // Auth will be registered externally in initializeWiki()
+            }
+
+            async initialize() {
+                // Get DOM references
+                this.sidebar = document.querySelector('.wiki-sidebar');
+                this.content = document.querySelector('.wiki-content');
+                this.controls = document.querySelector('.wiki-controls');
+                this.editorModal = document.querySelector('.wiki-editor');
+
+                if (!this.sidebar || !this.content) {
+                    console.error('Wiki container elements not found');
+                    return;
+                }
+
+                await this.loadPages();
+                this.setupEventListeners();
+                this.renderSidebar();
+
+                // Load welcome page by default
+                const welcomePage = this.pages.find(p => p.slug === 'welcome');
+                if (welcomePage) {
+                    this.loadPage(welcomePage);
+                } else if (this.pages.length > 0) {
+                    this.loadPage(this.pages[0]);
+                } else {
+                    this.showEmptyState();
+                }
+            }
+
+            async loadPages() {
+                try {
+                    // Load categories
+                    const { data: categories, error: catError } = await supabase
+                        .from('wiki_categories')
+                        .select('*')
+                        .order('position');
+
+                    if (catError) throw catError;
+                    this.categories = categories || [];
+
+                    // Load pages
+                    const { data: pages, error: pageError } = await supabase
+                        .from('wiki_pages')
+                        .select('*')
+                        .eq('is_published', true)
+                        .order('category, position');
+
+                    if (pageError) throw pageError;
+                    this.pages = pages || [];
+
+                } catch (error) {
+                    console.error('Error loading wiki pages:', error);
+                    this.showError('Failed to load wiki pages');
+                }
+            }
+
+            renderSidebar() {
+                if (!this.sidebar) return;
+
+                // Group pages by category
+                const pagesByCategory = {};
+                this.pages.forEach(page => {
+                    const category = page.category || 'general';
+                    if (!pagesByCategory[category]) {
+                        pagesByCategory[category] = [];
+                    }
+                    pagesByCategory[category].push(page);
+                });
+
+                // Render sidebar
+                let html = '';
+
+                // Render categories with pages
+                this.categories.forEach(category => {
+                    const categoryPages = pagesByCategory[category.name] || [];
+                    if (categoryPages.length > 0) {
+                        html += `<div class="wiki-category">${category.name}</div>`;
+                        categoryPages.forEach(page => {
+                            const activeClass = this.currentPage && this.currentPage.id === page.id ? 'active' : '';
+                            html += `<div class="wiki-nav-item ${activeClass}" data-page-id="${page.id}">${page.title}</div>`;
+                        });
+                    }
+                });
+
+                // Render uncategorized pages
+                const uncategorized = pagesByCategory['general'] || [];
+                const categoryNames = this.categories.map(c => c.name);
+                Object.keys(pagesByCategory).forEach(categoryName => {
+                    if (!categoryNames.includes(categoryName) && categoryName !== 'general') {
+                        const categoryPages = pagesByCategory[categoryName];
+                        if (categoryPages.length > 0) {
+                            html += `<div class="wiki-category">${categoryName}</div>`;
+                            categoryPages.forEach(page => {
+                                const activeClass = this.currentPage && this.currentPage.id === page.id ? 'active' : '';
+                                html += `<div class="wiki-nav-item ${activeClass}" data-page-id="${page.id}">${page.title}</div>`;
+                            });
+                        }
+                    }
+                });
+
+                if (uncategorized.length > 0) {
+                    html += `<div class="wiki-category">General</div>`;
+                    uncategorized.forEach(page => {
+                        const activeClass = this.currentPage && this.currentPage.id === page.id ? 'active' : '';
+                        html += `<div class="wiki-nav-item ${activeClass}" data-page-id="${page.id}">${page.title}</div>`;
+                    });
+                }
+
+                this.sidebar.innerHTML = html;
+            }
+
+            setupEventListeners() {
+                // Sidebar navigation
+                if (this.sidebar) {
+                    this.sidebar.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('wiki-nav-item')) {
+                            const pageId = e.target.dataset.pageId;
+                            const page = this.pages.find(p => p.id === pageId);
+                            if (page) {
+                                this.loadPage(page);
+                            }
+                        }
+                    });
+                }
+
+                // Control buttons
+                if (this.controls) {
+                    this.controls.addEventListener('click', (e) => {
+                        if (e.target.matches('[data-action="new-page"]')) {
+                            this.newPage();
+                        } else if (e.target.matches('[data-action="edit-page"]')) {
+                            this.editPage();
+                        } else if (e.target.matches('[data-action="delete-page"]')) {
+                            this.deletePage();
+                        }
+                    });
+                }
+
+                // Editor modal
+                if (this.editorModal) {
+                    // Close modal
+                    this.editorModal.addEventListener('click', (e) => {
+                        if (e.target === this.editorModal || e.target.matches('[data-action="close-editor"]')) {
+                            this.closeEditor();
+                        }
+                    });
+
+                    // Save button
+                    this.editorModal.addEventListener('click', (e) => {
+                        if (e.target.matches('[data-action="save-page"]')) {
+                            this.savePage();
+                        }
+                    });
+
+                    // Live preview
+                    const textarea = this.editorModal.querySelector('.wiki-form-textarea');
+                    if (textarea) {
+                        textarea.addEventListener('input', () => {
+                            this.updatePreview();
+                        });
+                    }
+
+                    // Toolbar buttons
+                    this.editorModal.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('wiki-toolbar-btn')) {
+                            this.insertMarkdown(e.target.dataset.markdown);
+                        }
+                    });
+                }
+            }
+
+            loadPage(page) {
+                this.currentPage = page;
+
+                // Update sidebar active state
+                this.sidebar.querySelectorAll('.wiki-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.pageId === page.id) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Render page content
+                this.renderPageContent(page);
+                this.updateControls();
+            }
+
+            renderPageContent(page) {
+                if (!this.content) return;
+
+                try {
+                    // Parse markdown and sanitize HTML
+                    const html = marked.parse(page.content || '');
+                    const sanitizedHtml = DOMPurify.sanitize(html);
+                    this.content.innerHTML = sanitizedHtml;
+
+                    // Highlight code blocks
+                    this.content.querySelectorAll('pre code').forEach(block => {
+                        hljs.highlightElement(block);
+                    });
+                } catch (error) {
+                    console.error('Error rendering page content:', error);
+                    this.content.innerHTML = '<p>Error loading page content.</p>';
+                }
+            }
+
+            updateControls() {
+                if (!this.controls) return;
+
+                const canEdit = this.isAdmin;
+                const hasCurrentPage = !!this.currentPage;
+
+                let html = '';
+                if (canEdit) {
+                    html += `<button class="wiki-btn primary" data-action="new-page">➕ New Page</button>`;
+                    if (hasCurrentPage) {
+                        html += `<button class="wiki-btn secondary" data-action="edit-page">✏️ Edit</button>`;
+                        html += `<button class="wiki-btn secondary" data-action="delete-page">🗑️ Delete</button>`;
+                    }
+                }
+
+                this.controls.innerHTML = html;
+            }
+
+            newPage() {
+                if (!this.isAdmin) return;
+
+                this.currentEditingPage = {
+                    id: null,
+                    title: '',
+                    slug: '',
+                    content: '',
+                    category: 'Getting Started'
+                };
+
+                this.showEditor();
+            }
+
+            editPage() {
+                if (!this.isAdmin || !this.currentPage) return;
+
+                this.currentEditingPage = { ...this.currentPage };
+                this.showEditor();
+            }
+
+            async deletePage() {
+                if (!this.isAdmin || !this.currentPage) return;
+
+                if (!confirm(`Are you sure you want to delete "${this.currentPage.title}"?`)) {
+                    return;
+                }
+
+                try {
+                    const { error } = await supabase
+                        .from('wiki_pages')
+                        .delete()
+                        .eq('id', this.currentPage.id);
+
+                    if (error) throw error;
+
+                    // Remove from local pages array
+                    this.pages = this.pages.filter(p => p.id !== this.currentPage.id);
+
+                    // Update UI
+                    this.renderSidebar();
+
+                    // Load another page or show empty state
+                    if (this.pages.length > 0) {
+                        this.loadPage(this.pages[0]);
+                    } else {
+                        this.showEmptyState();
+                    }
+
+                } catch (error) {
+                    console.error('Error deleting page:', error);
+                    alert('Failed to delete page');
+                }
+            }
+
+            showEditor() {
+                if (!this.editorModal || !this.currentEditingPage) return;
+
+                // Populate form
+                const titleInput = this.editorModal.querySelector('#wiki-title');
+                const slugInput = this.editorModal.querySelector('#wiki-slug');
+                const categorySelect = this.editorModal.querySelector('#wiki-category');
+                const contentTextarea = this.editorModal.querySelector('#wiki-content');
+
+                if (titleInput) titleInput.value = this.currentEditingPage.title;
+                if (slugInput) slugInput.value = this.currentEditingPage.slug;
+                if (categorySelect) {
+                    categorySelect.value = this.currentEditingPage.category;
+                    // Populate category options
+                    let options = '';
+                    this.categories.forEach(cat => {
+                        options += `<option value="${cat.name}">${cat.name}</option>`;
+                    });
+                    categorySelect.innerHTML = options;
+                }
+                if (contentTextarea) contentTextarea.value = this.currentEditingPage.content;
+
+                // Update preview
+                this.updatePreview();
+
+                // Show modal
+                this.editorModal.classList.add('show');
+
+                // Focus title input
+                if (titleInput) titleInput.focus();
+            }
+
+            closeEditor() {
+                if (this.editorModal) {
+                    this.editorModal.classList.remove('show');
+                }
+                this.currentEditingPage = null;
+            }
+
+            async savePage() {
+                if (!this.isAdmin || !this.currentEditingPage) return;
+
+                const titleInput = this.editorModal.querySelector('#wiki-title');
+                const slugInput = this.editorModal.querySelector('#wiki-slug');
+                const categorySelect = this.editorModal.querySelector('#wiki-category');
+                const contentTextarea = this.editorModal.querySelector('#wiki-content');
+
+                const title = titleInput?.value.trim();
+                const slug = slugInput?.value.trim() || this.generateSlug(title);
+                const category = categorySelect?.value || 'Getting Started';
+                const content = contentTextarea?.value || '';
+
+                if (!title) {
+                    alert('Please enter a title');
+                    return;
+                }
+
+                try {
+                    const pageData = {
+                        title,
+                        slug,
+                        category,
+                        content,
+                        is_published: true
+                    };
+
+                    let savedPage;
+
+                    if (this.currentEditingPage.id) {
+                        // Update existing page
+                        const { data, error } = await supabase
+                            .from('wiki_pages')
+                            .update(pageData)
+                            .eq('id', this.currentEditingPage.id)
+                            .select()
+                            .single();
+
+                        if (error) throw error;
+                        savedPage = data;
+
+                        // Update local pages array
+                        const index = this.pages.findIndex(p => p.id === this.currentEditingPage.id);
+                        if (index !== -1) {
+                            this.pages[index] = savedPage;
+                        }
+                    } else {
+                        // Create new page
+                        const { data, error } = await supabase
+                            .from('wiki_pages')
+                            .insert(pageData)
+                            .select()
+                            .single();
+
+                        if (error) throw error;
+                        savedPage = data;
+
+                        // Add to local pages array
+                        this.pages.push(savedPage);
+                    }
+
+                    // Update UI
+                    this.renderSidebar();
+                    this.loadPage(savedPage);
+                    this.closeEditor();
+
+                } catch (error) {
+                    console.error('Error saving page:', error);
+                    alert('Failed to save page: ' + error.message);
+                }
+            }
+
+            updatePreview() {
+                const contentTextarea = this.editorModal.querySelector('#wiki-content');
+                const preview = this.editorModal.querySelector('.wiki-editor-preview');
+
+                if (!contentTextarea || !preview) return;
+
+                try {
+                    const html = marked.parse(contentTextarea.value || '');
+                    const sanitizedHtml = DOMPurify.sanitize(html);
+                    preview.innerHTML = sanitizedHtml;
+
+                    // Highlight code blocks
+                    preview.querySelectorAll('pre code').forEach(block => {
+                        hljs.highlightElement(block);
+                    });
+                } catch (error) {
+                    console.error('Error updating preview:', error);
+                    preview.innerHTML = '<p>Error rendering preview</p>';
+                }
+            }
+
+            insertMarkdown(markdown) {
+                const textarea = this.editorModal.querySelector('#wiki-content');
+                if (!textarea) return;
+
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+                const before = text.substring(0, start);
+                const selected = text.substring(start, end);
+                const after = text.substring(end);
+
+                let replacement = markdown;
+                if (markdown.includes('|text|')) {
+                    replacement = markdown.replace('|text|', selected || 'text');
+                } else if (selected) {
+                    replacement = markdown + selected + markdown;
+                }
+
+                textarea.value = before + replacement + after;
+                textarea.focus();
+
+                // Update preview
+                this.updatePreview();
+            }
+
+            generateSlug(title) {
+                return title
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+            }
+
+            showEmptyState() {
+                if (this.content) {
+                    this.content.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--fg-dim);">
+                            <h2>No wiki pages found</h2>
+                            <p>Get started by creating your first page.</p>
+                        </div>
+                    `;
+                }
+                this.currentPage = null;
+                this.updateControls();
+            }
+
+            showError(message) {
+                if (this.content) {
+                    this.content.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--warning);">
+                            <h2>Error</h2>
+                            <p>${message}</p>
+                        </div>
+                    `;
+                }
+            }
+        }
 
         // YouTube Helper Functions
         function extractVideoId(url) {
@@ -2110,18 +3270,14 @@
             constructor() {
                 this.initializeElements();
                 this.bindEvents();
-                this.checkAuthStatus();
+                this.setupAuthListener();
                 this.loadTasks();
             }
 
             initializeElements() {
-                this.authBtn = document.getElementById('auth-btn');
-                this.authText = document.getElementById('auth-text');
                 this.addTaskBtn = document.getElementById('add-task-btn');
                 this.taskModal = document.getElementById('task-modal');
-                this.loginModal = document.getElementById('login-modal');
                 this.taskForm = document.getElementById('task-form');
-                this.loginForm = document.getElementById('login-form');
 
                 this.columns = {
                     todo: document.getElementById('todo-tasks'),
@@ -2137,9 +3293,6 @@
             }
 
             bindEvents() {
-                // Auth events
-                this.authBtn.addEventListener('click', () => this.handleAuthClick());
-
                 // Task events
                 this.addTaskBtn.addEventListener('click', () => this.openTaskModal());
                 document.getElementById('modal-close').addEventListener('click', () => this.closeTaskModal());
@@ -2147,109 +3300,44 @@
                 this.taskForm.addEventListener('submit', (e) => this.handleTaskSubmit(e));
                 document.getElementById('delete-btn').addEventListener('click', () => this.deleteTask());
 
-                // Login events
-                document.getElementById('login-modal-close').addEventListener('click', () => this.closeLoginModal());
-                document.getElementById('login-cancel-btn').addEventListener('click', () => this.closeLoginModal());
-                this.loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-
                 // Drag and drop events
                 this.setupDragAndDrop();
 
                 // Close modals on outside click
                 window.addEventListener('click', (e) => {
                     if (e.target === this.taskModal) this.closeTaskModal();
-                    if (e.target === this.loginModal) this.closeLoginModal();
                 });
             }
 
-            async checkAuthStatus() {
-                try {
-                    const { data: { user } } = await supabase.auth.getUser();
-                    currentUser = user;
-
-                    if (user) {
-                        // Check if user is admin (using email)
-                        isAdmin = user.email === 'rbhansen@protonmail.com';
-                        this.updateAuthUI(true);
-                    } else {
-                        isAdmin = false;
-                        this.updateAuthUI(false);
-                    }
-                } catch (error) {
-                    console.error('Auth check error:', error);
-                    isAdmin = false;
-                    this.updateAuthUI(false);
-                }
-            }
-
-            updateAuthUI(loggedIn) {
-                if (loggedIn && isAdmin) {
-                    this.authText.textContent = 'Admin';
-                    this.authBtn.textContent = 'Logout';
-                    this.authBtn.classList.add('logged-in');
-                    this.addTaskBtn.disabled = false;
-                } else {
-                    this.authText.textContent = 'View Only';
-                    this.authBtn.textContent = 'Admin Login';
-                    this.authBtn.classList.remove('logged-in');
-                    this.addTaskBtn.disabled = true;
-                }
-            }
-
-            async handleAuthClick() {
-                if (currentUser && isAdmin) {
-                    // Logout
-                    await supabase.auth.signOut();
-                    currentUser = null;
-                    isAdmin = false;
-                    this.updateAuthUI(false);
-                } else {
-                    // Show login modal
-                    this.openLoginModal();
-                }
-            }
-
-            openLoginModal() {
-                this.loginModal.classList.add('show');
-                document.getElementById('login-email').focus();
-            }
-
-            closeLoginModal() {
-                this.loginModal.classList.remove('show');
-                this.loginForm.reset();
-                document.getElementById('login-error').style.display = 'none';
-            }
-
-            async handleLogin(e) {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                const errorDiv = document.getElementById('login-error');
-
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
+            setupAuthListener() {
+                // Listen for auth changes from global auth
+                if (globalAuth) {
+                    globalAuth.onAuthChange((isAdmin, user) => {
+                        this.updateTasksUI(isAdmin);
                     });
-
-                    if (error) throw error;
-
-                    // Check if user is admin (using email)
-                    if (data.user.email !== 'rbhansen@protonmail.com') {
-                        await supabase.auth.signOut();
-                        throw new Error('Access denied. Admin privileges required.');
-                    }
-
-                    currentUser = data.user;
-                    isAdmin = true;
-                    this.updateAuthUI(true);
-                    this.closeLoginModal();
-
-                } catch (error) {
-                    errorDiv.textContent = error.message;
-                    errorDiv.style.display = 'block';
+                } else {
+                    // Fallback for initial load - wait for globalAuth to be ready
+                    const checkGlobalAuth = () => {
+                        if (globalAuth) {
+                            globalAuth.onAuthChange((isAdmin, user) => {
+                                this.updateTasksUI(isAdmin);
+                            });
+                            this.updateTasksUI(globalAuth.admin);
+                        } else {
+                            setTimeout(checkGlobalAuth, 100);
+                        }
+                    };
+                    checkGlobalAuth();
                 }
             }
+
+            updateTasksUI(isAdmin) {
+                this.addTaskBtn.disabled = !isAdmin;
+
+                // Re-render tasks to update edit buttons
+                this.renderTasks();
+            }
+
 
             async loadTasks() {
                 try {
@@ -2296,11 +3384,12 @@
 
             createTaskElement(task) {
                 const taskEl = document.createElement('div');
+                const currentAdmin = globalAuth ? globalAuth.admin : false;
                 taskEl.className = `task-card priority-${task.priority}`;
-                taskEl.draggable = isAdmin;
+                taskEl.draggable = currentAdmin;
                 taskEl.dataset.taskId = task.id;
 
-                const actionsHtml = isAdmin ? `
+                const actionsHtml = currentAdmin ? `
                     <div class="task-actions">
                         <button class="task-action" onclick="kanban.editTask('${task.id}')" title="Edit">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -2319,7 +3408,7 @@
                     <div class="task-priority ${task.priority}">${task.priority}</div>
                 `;
 
-                if (isAdmin) {
+                if (currentAdmin) {
                     this.addDragListeners(taskEl);
                 }
 
@@ -2335,20 +3424,23 @@
             setupDragAndDrop() {
                 Object.entries(this.columns).forEach(([status, column]) => {
                     column.addEventListener('dragover', (e) => {
-                        if (!isAdmin) return;
+                        const currentAdmin = globalAuth ? globalAuth.admin : false;
+                        if (!currentAdmin) return;
                         e.preventDefault();
                         column.classList.add('drag-over');
                     });
 
                     column.addEventListener('dragleave', (e) => {
-                        if (!isAdmin) return;
+                        const currentAdmin = globalAuth ? globalAuth.admin : false;
+                        if (!currentAdmin) return;
                         if (!column.contains(e.relatedTarget)) {
                             column.classList.remove('drag-over');
                         }
                     });
 
                     column.addEventListener('drop', (e) => {
-                        if (!isAdmin) return;
+                        const currentAdmin = globalAuth ? globalAuth.admin : false;
+                        if (!currentAdmin) return;
                         e.preventDefault();
                         column.classList.remove('drag-over');
 
@@ -2360,7 +3452,8 @@
 
             addDragListeners(taskEl) {
                 taskEl.addEventListener('dragstart', (e) => {
-                    if (!isAdmin) return;
+                    const currentAdmin = globalAuth ? globalAuth.admin : false;
+                    if (!currentAdmin) return;
                     e.dataTransfer.setData('text/plain', taskEl.dataset.taskId);
                     taskEl.classList.add('dragging');
                 });
@@ -2513,6 +3606,28 @@
             }
         }
 
+        // Initialize Wiki when Wiki section is shown
+        function initializeWiki() {
+            if (!wikiManager) {
+                wikiManager = new WikiManager();
+
+                // Register with global auth after creation
+                if (globalAuth) {
+                    globalAuth.registerCallback((isAdmin, user) => {
+                        wikiManager.isAdmin = isAdmin;
+                        wikiManager.currentUser = user;
+                        wikiManager.updateControls();
+                    });
+
+                    // Set initial auth state
+                    wikiManager.isAdmin = globalAuth.admin;
+                    wikiManager.currentUser = globalAuth.user;
+                }
+
+                wikiManager.initialize();
+            }
+        }
+
         // Theme management
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
@@ -2560,6 +3675,8 @@
                             initializeKanban();
                         } else if (targetSection === 'videos') {
                             initializeVideos();
+                        } else if (targetSection === 'wiki') {
+                            initializeWiki();
                         }
                     }
                 });
