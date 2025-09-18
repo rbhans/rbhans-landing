@@ -2312,7 +2312,7 @@
     </div>
 
     <!-- Global Auth Toggle Button -->
-    <div class="auth-toggle" id="auth-toggle" onclick="globalAuth.handleAuthClick()" title="Admin Login">
+    <div class="auth-toggle" id="auth-toggle" title="Admin Login">
         <svg class="icon" id="auth-icon" fill="currentColor" viewBox="0 0 24 24">
             <!-- User icon (logged out) -->
             <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
@@ -2379,6 +2379,11 @@
                 this.authToggle = document.getElementById('auth-toggle');
                 this.authIcon = document.getElementById('auth-icon');
                 this.loginModal = document.getElementById('login-modal');
+
+                // Setup auth toggle click handler
+                if (this.authToggle) {
+                    this.authToggle.addEventListener('click', () => this.handleAuthClick());
+                }
 
                 // Setup login form
                 this.setupLoginForm();
@@ -2468,6 +2473,10 @@
                 const password = document.getElementById('login-password').value;
                 const errorDiv = document.getElementById('login-error');
 
+                // Clear previous errors
+                errorDiv.style.display = 'none';
+                console.log('Attempting login with email:', email);
+
                 try {
                     const { data, error } = await supabase.auth.signInWithPassword({
                         email,
@@ -2475,6 +2484,8 @@
                     });
 
                     if (error) throw error;
+
+                    console.log('Login successful, user:', data.user.email);
 
                     // Check if user is admin
                     if (data.user.email !== 'rbhansen@protonmail.com') {
@@ -2484,11 +2495,13 @@
 
                     this.currentUser = data.user;
                     this.isAdmin = true;
+                    console.log('Admin status set:', this.isAdmin);
                     this.updateAuthUI();
                     this.closeLoginModal();
                     this.notifyCallbacks();
 
                 } catch (error) {
+                    console.error('Login error:', error);
                     errorDiv.textContent = error.message;
                     errorDiv.style.display = 'block';
                 }
@@ -2499,7 +2512,13 @@
                 this.callbacks.push(callback);
             }
 
+            // Alias for compatibility
+            registerCallback(callback) {
+                this.callbacks.push(callback);
+            }
+
             notifyCallbacks() {
+                console.log('Notifying', this.callbacks.length, 'auth callbacks. Admin status:', this.isAdmin);
                 this.callbacks.forEach(callback => {
                     try {
                         callback(this.isAdmin, this.currentUser);
@@ -3602,6 +3621,11 @@
         function initializeKanban() {
             if (!kanban) {
                 kanban = new KanbanBoard();
+
+                // Ensure auth integration after creation
+                if (globalAuth) {
+                    kanban.updateTasksUI(globalAuth.admin);
+                }
             }
         }
 
