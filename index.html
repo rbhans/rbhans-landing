@@ -2352,7 +2352,18 @@
                 this.loginModal = null;
                 this.callbacks = [];
 
+                // Promise that resolves when initial auth check completes
+                this.authReady = null;
+                this.authReadyResolve = null;
+                this.createAuthReadyPromise();
+
                 this.init();
+            }
+
+            createAuthReadyPromise() {
+                this.authReady = new Promise((resolve) => {
+                    this.authReadyResolve = resolve;
+                });
             }
 
             init() {
@@ -2399,6 +2410,7 @@
 
             async checkAuthStatus() {
                 try {
+                    console.log('Checking auth status...');
                     const { data: { user } } = await supabase.auth.getUser();
                     this.currentUser = user;
 
@@ -2408,13 +2420,26 @@
                         this.isAdmin = false;
                     }
 
+                    console.log('Auth check completed. Admin:', this.isAdmin, 'User:', user?.email);
                     this.updateAuthUI();
                     this.notifyCallbacks();
+
+                    // Resolve the authReady promise
+                    if (this.authReadyResolve) {
+                        this.authReadyResolve();
+                        this.authReadyResolve = null;
+                    }
                 } catch (error) {
                     console.error('Auth check error:', error);
                     this.isAdmin = false;
                     this.updateAuthUI();
                     this.notifyCallbacks();
+
+                    // Still resolve authReady even on error
+                    if (this.authReadyResolve) {
+                        this.authReadyResolve();
+                        this.authReadyResolve = null;
+                    }
                 }
             }
 
@@ -2499,10 +2524,16 @@
 
                     this.currentUser = data.user;
                     this.isAdmin = true;
-                    console.log('Admin status set:', this.isAdmin);
+                    console.log('Login successful - Admin status set:', this.isAdmin);
                     this.updateAuthUI();
                     this.closeLoginModal();
                     this.notifyCallbacks();
+
+                    // Resolve authReady if it exists (for late logins)
+                    if (this.authReadyResolve) {
+                        this.authReadyResolve();
+                        this.authReadyResolve = null;
+                    }
 
                 } catch (error) {
                     console.error('Login error:', error);
@@ -2513,21 +2544,24 @@
 
             // Callback system for other components to listen to auth changes
             onAuthChange(callback) {
+                console.log('Registering auth callback. Total callbacks:', this.callbacks.length + 1);
                 this.callbacks.push(callback);
             }
 
             // Alias for compatibility
             registerCallback(callback) {
+                console.log('Registering auth callback (via registerCallback). Total callbacks:', this.callbacks.length + 1);
                 this.callbacks.push(callback);
             }
 
             notifyCallbacks() {
                 console.log('Notifying', this.callbacks.length, 'auth callbacks. Admin status:', this.isAdmin);
-                this.callbacks.forEach(callback => {
+                this.callbacks.forEach((callback, index) => {
                     try {
+                        console.log(`Calling auth callback ${index + 1}...`);
                         callback(this.isAdmin, this.currentUser);
                     } catch (error) {
-                        console.error('Auth callback error:', error);
+                        console.error(`Auth callback ${index + 1} error:`, error);
                     }
                 });
             }
@@ -3670,15 +3704,21 @@
                 // Register with global auth after creation
                 if (globalAuth) {
                     globalAuth.registerCallback((isAdmin, user) => {
+                        console.log('Wiki auth callback fired:', { isAdmin, userEmail: user?.email });
                         wikiManager.isAdmin = isAdmin;
                         wikiManager.currentUser = user;
                         wikiManager.updateControls();
                     });
 
-                    // Set initial auth state
+                    // Wait for auth check to complete before setting initial state
+                    console.log('Waiting for auth ready...');
+                    await globalAuth.authReady;
+                    console.log('Auth ready completed, setting initial state...');
+
+                    // Set initial auth state after auth check completes
                     wikiManager.isAdmin = globalAuth.admin;
                     wikiManager.currentUser = globalAuth.user;
-                    console.log('Wiki manager auth state set:', { isAdmin: wikiManager.isAdmin });
+                    console.log('Wiki manager auth state set:', { isAdmin: wikiManager.isAdmin, userEmail: globalAuth.user?.email });
                 }
 
                 try {
