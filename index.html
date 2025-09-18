@@ -1402,6 +1402,12 @@
             flex-shrink: 0;
         }
 
+        .wiki-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
         .wiki-content {
             flex: 1;
             background: var(--bg-secondary);
@@ -2084,13 +2090,17 @@
                     <div class="wiki-nav" id="wiki-nav">
                         <div class="wiki-loading">Loading pages...</div>
                     </div>
-
-                    <div class="wiki-controls" id="wiki-controls"></div>
                 </div>
 
-                <!-- Wiki Content -->
-                <div class="wiki-content">
-                    <div class="wiki-loading">Loading content...</div>
+                <!-- Wiki Main Content Area -->
+                <div class="wiki-main">
+                    <!-- Wiki Controls (Edit buttons) -->
+                    <div class="wiki-controls" id="wiki-controls"></div>
+
+                    <!-- Wiki Content -->
+                    <div class="wiki-content">
+                        <div class="wiki-loading">Loading content...</div>
+                    </div>
                 </div>
                 </div>
             </div>
