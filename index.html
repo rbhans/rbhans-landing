@@ -2749,18 +2749,7 @@
                     });
                 }
 
-                // Control buttons
-                if (this.controls) {
-                    this.controls.addEventListener('click', (e) => {
-                        if (e.target.matches('[data-action="new-page"]')) {
-                            this.newPage();
-                        } else if (e.target.matches('[data-action="edit-page"]')) {
-                            this.editPage();
-                        } else if (e.target.matches('[data-action="delete-page"]')) {
-                            this.deletePage();
-                        }
-                    });
-                }
+                // Control buttons are now handled in attachControlEventListeners()
 
                 // Editor modal
                 if (this.editorModal) {
@@ -2857,6 +2846,33 @@
 
                 console.log('Wiki controls HTML:', html);
                 this.controls.innerHTML = html;
+
+                // Re-attach event listeners after updating HTML
+                this.attachControlEventListeners();
+            }
+
+            attachControlEventListeners() {
+                if (!this.controls) return;
+
+                // Remove old listeners by cloning the element (removes all listeners)
+                const newControls = this.controls.cloneNode(true);
+                this.controls.parentNode.replaceChild(newControls, this.controls);
+                this.controls = newControls;
+
+                // Attach new listeners
+                this.controls.addEventListener('click', (e) => {
+                    console.log('Wiki control clicked:', e.target.dataset.action);
+                    if (e.target.matches('[data-action="new-page"]')) {
+                        console.log('New page button clicked');
+                        this.newPage();
+                    } else if (e.target.matches('[data-action="edit-page"]')) {
+                        console.log('Edit page button clicked');
+                        this.editPage();
+                    } else if (e.target.matches('[data-action="delete-page"]')) {
+                        console.log('Delete page button clicked');
+                        this.deletePage();
+                    }
+                });
             }
 
             newPage() {
