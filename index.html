@@ -2566,30 +2566,47 @@
             }
 
             async initialize() {
+                console.log('WikiManager.initialize() started');
+
                 // Get DOM references
                 this.sidebar = document.querySelector('.wiki-sidebar');
                 this.content = document.querySelector('.wiki-content');
                 this.controls = document.querySelector('.wiki-controls');
                 this.editorModal = document.querySelector('.wiki-editor');
 
+                console.log('Wiki DOM elements found:', {
+                    sidebar: !!this.sidebar,
+                    content: !!this.content,
+                    controls: !!this.controls,
+                    editorModal: !!this.editorModal
+                });
+
                 if (!this.sidebar || !this.content) {
-                    console.error('Wiki container elements not found');
+                    console.error('Wiki container elements not found - initialization aborted');
                     return;
                 }
 
+                console.log('Loading wiki pages...');
                 await this.loadPages();
+                console.log('Loaded', this.pages.length, 'pages');
+
                 this.setupEventListeners();
                 this.renderSidebar();
 
                 // Load welcome page by default
                 const welcomePage = this.pages.find(p => p.slug === 'welcome');
                 if (welcomePage) {
+                    console.log('Loading welcome page:', welcomePage.title);
                     this.loadPage(welcomePage);
                 } else if (this.pages.length > 0) {
+                    console.log('Loading first page:', this.pages[0].title);
                     this.loadPage(this.pages[0]);
                 } else {
+                    console.log('No pages found, showing empty state');
                     this.showEmptyState();
                 }
+
+                console.log('WikiManager.initialize() completed');
             }
 
             async loadPages() {
@@ -3645,8 +3662,9 @@
         }
 
         // Initialize Wiki when Wiki section is shown
-        function initializeWiki() {
+        async function initializeWiki() {
             if (!wikiManager) {
+                console.log('Initializing wiki manager...');
                 wikiManager = new WikiManager();
 
                 // Register with global auth after creation
@@ -3660,12 +3678,18 @@
                     // Set initial auth state
                     wikiManager.isAdmin = globalAuth.admin;
                     wikiManager.currentUser = globalAuth.user;
+                    console.log('Wiki manager auth state set:', { isAdmin: wikiManager.isAdmin });
                 }
 
-                wikiManager.initialize();
+                try {
+                    await wikiManager.initialize();
+                    console.log('Wiki manager initialization completed');
 
-                // Ensure controls are updated with current auth state
-                wikiManager.updateControls();
+                    // Ensure controls are updated with current auth state after initialization
+                    wikiManager.updateControls();
+                } catch (error) {
+                    console.error('Wiki initialization failed:', error);
+                }
             }
         }
 
