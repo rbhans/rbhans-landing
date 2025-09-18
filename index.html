@@ -2616,7 +2616,7 @@
                 this.sidebar = document.querySelector('.wiki-sidebar');
                 this.content = document.querySelector('.wiki-content');
                 this.controls = document.querySelector('.wiki-controls');
-                this.editorModal = document.querySelector('.wiki-editor');
+                this.editorModal = document.querySelector('#wiki-editor-modal');
 
                 console.log('Wiki DOM elements found:', {
                     sidebar: !!this.sidebar,
@@ -2876,7 +2876,11 @@
             }
 
             newPage() {
-                if (!this.isAdmin) return;
+                console.log('newPage() called. Admin:', this.isAdmin);
+                if (!this.isAdmin) {
+                    console.log('Not admin, returning');
+                    return;
+                }
 
                 this.currentEditingPage = {
                     id: null,
@@ -2886,6 +2890,7 @@
                     category: 'Getting Started'
                 };
 
+                console.log('Created currentEditingPage:', this.currentEditingPage);
                 this.showEditor();
             }
 
@@ -2931,13 +2936,30 @@
             }
 
             showEditor() {
-                if (!this.editorModal || !this.currentEditingPage) return;
+                console.log('showEditor() called. EditorModal:', !!this.editorModal, 'CurrentEditingPage:', !!this.currentEditingPage);
 
-                // Populate form
-                const titleInput = this.editorModal.querySelector('#wiki-title');
-                const slugInput = this.editorModal.querySelector('#wiki-slug');
-                const categorySelect = this.editorModal.querySelector('#wiki-category');
-                const contentTextarea = this.editorModal.querySelector('#wiki-content');
+                if (!this.editorModal) {
+                    console.error('Editor modal not found!');
+                    return;
+                }
+
+                if (!this.currentEditingPage) {
+                    console.error('No currentEditingPage set!');
+                    return;
+                }
+
+                // Populate form - fix the field IDs to match the HTML
+                const titleInput = this.editorModal.querySelector('#page-title');
+                const slugInput = this.editorModal.querySelector('#page-slug');
+                const categorySelect = this.editorModal.querySelector('#page-category');
+                const contentTextarea = this.editorModal.querySelector('#page-content');
+
+                console.log('Form elements found:', {
+                    titleInput: !!titleInput,
+                    slugInput: !!slugInput,
+                    categorySelect: !!categorySelect,
+                    contentTextarea: !!contentTextarea
+                });
 
                 if (titleInput) titleInput.value = this.currentEditingPage.title;
                 if (slugInput) slugInput.value = this.currentEditingPage.slug;
@@ -2956,6 +2978,7 @@
                 this.updatePreview();
 
                 // Show modal
+                console.log('Showing editor modal...');
                 this.editorModal.classList.add('show');
 
                 // Focus title input
