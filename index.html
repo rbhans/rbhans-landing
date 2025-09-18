@@ -1986,6 +1986,9 @@
                     const videoCard = this.createVideoCard(video);
                     this.videosGrid.appendChild(videoCard);
                 });
+
+                // Re-setup filters after videos are loaded
+                setupVideoFilters();
             }
 
             createVideoCard(video) {
@@ -2058,6 +2061,49 @@
                 videoManager = new VideoManager();
                 videoManager.initialize();
             }
+        }
+
+        // Setup video filtering
+        function setupVideoFilters() {
+            const videoFilters = document.getElementById('video-filters');
+            if (!videoFilters) return;
+
+            const buttons = videoFilters.querySelectorAll('.category-btn');
+            const videosGrid = document.getElementById('videos-grid');
+            const videoCards = videosGrid.querySelectorAll('.video-card');
+
+            buttons.forEach(btn => {
+                // Remove existing listeners to avoid duplicates
+                btn.replaceWith(btn.cloneNode(true));
+            });
+
+            // Re-get buttons after cloning to get fresh event listeners
+            const freshButtons = videoFilters.querySelectorAll('.category-btn');
+
+            freshButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const category = btn.dataset.category;
+
+                    freshButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Re-query video cards each time (they might have changed)
+                    const currentVideoCards = videosGrid.querySelectorAll('.video-card');
+
+                    currentVideoCards.forEach(item => {
+                        if (category === 'all') {
+                            item.style.display = 'block';
+                        } else {
+                            const itemTags = item.dataset.tags ? item.dataset.tags.toLowerCase().split(',') : [];
+                            if (itemTags.includes(category)) {
+                                item.style.display = 'block';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
         }
 
         // Kanban functionality
