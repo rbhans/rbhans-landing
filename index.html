@@ -1684,14 +1684,8 @@
                     currentUser = user;
 
                     if (user) {
-                        // Check if user is admin
-                        const { data: adminData } = await supabase
-                            .from('admin_users')
-                            .select('user_id')
-                            .eq('user_id', user.id)
-                            .single();
-
-                        isAdmin = !!adminData;
+                        // Check if user is admin (using email)
+                        isAdmin = user.email === 'rbhansen@protonmail.com';
                         this.updateAuthUI(true);
                     } else {
                         isAdmin = false;
@@ -1756,14 +1750,8 @@
 
                     if (error) throw error;
 
-                    // Check if user is admin
-                    const { data: adminData } = await supabase
-                        .from('admin_users')
-                        .select('user_id')
-                        .eq('user_id', data.user.id)
-                        .single();
-
-                    if (!adminData) {
+                    // Check if user is admin (using email)
+                    if (data.user.email !== 'rbhansen@protonmail.com') {
                         await supabase.auth.signOut();
                         throw new Error('Access denied. Admin privileges required.');
                     }
