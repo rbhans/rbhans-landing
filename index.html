@@ -1525,7 +1525,79 @@
         .wiki-editor-content {
             flex: 1;
             display: flex;
+            flex-direction: column;
             overflow: hidden;
+            padding: 20px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(var(--accent-rgb), 0.1);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--accent);
+            background: rgba(var(--accent-rgb), 0.1);
+        }
+
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            opacity: 0.6;
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+        }
+
+        .file-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .file-size {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .remove-file {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .remove-file:hover {
+            background: #dc2626;
         }
 
         .wiki-editor-form {
@@ -2114,73 +2186,65 @@
                     <button class="modal-close" id="editor-close">&times;</button>
                 </div>
 
-                <div class="editor-container">
-                    <div class="editor-tabs">
-                        <button class="editor-tab active" data-tab="edit">Edit</button>
-                        <button class="editor-tab" data-tab="preview">Preview</button>
-                    </div>
+                <div class="editor-form">
+                    <form id="wiki-form">
+                        <div class="form-group">
+                            <label for="page-title">Title</label>
+                            <input type="text" id="page-title" required maxlength="100" placeholder="Enter page title">
+                        </div>
 
-                    <div class="editor-form">
-                        <form id="wiki-form">
-                            <div class="form-group">
-                                <label for="page-title">Title</label>
-                                <input type="text" id="page-title" required maxlength="100">
-                            </div>
+                        <div class="form-group">
+                            <label for="page-parent">Parent Page</label>
+                            <select id="page-parent">
+                                <option value="">None (Top Level)</option>
+                            </select>
+                            <small>Choose a parent page to create hierarchy</small>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="page-slug">URL Slug</label>
-                                <input type="text" id="page-slug" required maxlength="100" pattern="[a-z0-9-]+">
-                                <small>Only lowercase letters, numbers, and hyphens</small>
-                            </div>
+                        <div class="form-group">
+                            <label for="page-category">Category</label>
+                            <select id="page-category">
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Niagara">Niagara</option>
+                                <option value="JCI Metasys">JCI Metasys</option>
+                                <option value="Schneider">Schneider</option>
+                                <option value="Troubleshooting">Troubleshooting</option>
+                                <option value="Best Practices">Best Practices</option>
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="page-category">Category</label>
-                                <select id="page-category">
-                                    <option value="Getting Started">Getting Started</option>
-                                    <option value="Niagara">Niagara</option>
-                                    <option value="JCI Metasys">JCI Metasys</option>
-                                    <option value="Schneider">Schneider</option>
-                                    <option value="Troubleshooting">Troubleshooting</option>
-                                    <option value="Best Practices">Best Practices</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="page-slug">URL Slug (auto-generated)</label>
+                            <input type="text" id="page-slug" readonly>
+                            <small>Generated automatically from title and parent page</small>
+                        </div>
 
-                            <div class="editor-content">
-                                <div class="editor-pane active" id="edit-pane">
-                                    <div class="editor-toolbar">
-                                        <button type="button" class="toolbar-btn" data-action="bold" title="Bold">
-                                            <strong>B</strong>
-                                        </button>
-                                        <button type="button" class="toolbar-btn" data-action="italic" title="Italic">
-                                            <em>I</em>
-                                        </button>
-                                        <button type="button" class="toolbar-btn" data-action="link" title="Link">
-                                            🔗
-                                        </button>
-                                        <button type="button" class="toolbar-btn" data-action="code" title="Code">
-                                            &lt;&gt;
-                                        </button>
-                                        <button type="button" class="toolbar-btn" data-action="image" title="Image">
-                                            🖼️
-                                        </button>
-                                    </div>
-                                    <textarea id="page-content" placeholder="Write your content in Markdown..." rows="20"></textarea>
-                                </div>
-
-                                <div class="editor-pane" id="preview-pane">
-                                    <div class="preview-content" id="preview-content">
-                                        Preview will appear here...
+                        <div class="form-group">
+                            <label for="markdown-file">Markdown Content</label>
+                            <div class="file-upload-area" id="file-upload-area">
+                                <input type="file" id="markdown-file" accept=".md,.markdown,.txt" style="display: none;">
+                                <div class="upload-placeholder">
+                                    <div class="upload-icon">📄</div>
+                                    <div class="upload-text">
+                                        <strong>Click to upload</strong> or drag and drop<br>
+                                        <small>Markdown files (.md, .markdown, .txt)</small>
                                     </div>
                                 </div>
+                                <div class="file-info" style="display: none;">
+                                    <div class="file-name"></div>
+                                    <div class="file-size"></div>
+                                    <button type="button" class="remove-file">Remove</button>
+                                </div>
                             </div>
+                            <small>Upload a markdown file with your page content</small>
+                        </div>
 
-                            <div class="form-actions">
-                                <button type="button" id="editor-cancel">Cancel</button>
-                                <button type="submit" id="save-page-btn">Save Page</button>
-                                <button type="button" id="delete-page-btn" style="display: none;">Delete</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="form-actions">
+                            <button type="button" id="editor-cancel">Cancel</button>
+                            <button type="submit" id="save-page-btn">Save Page</button>
+                            <button type="button" id="delete-page-btn" style="display: none;">Delete</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -2641,10 +2705,10 @@
                 const welcomePage = this.pages.find(p => p.slug === 'welcome');
                 if (welcomePage) {
                     console.log('Loading welcome page:', welcomePage.title);
-                    this.loadPage(welcomePage);
+                    await this.loadPage(welcomePage);
                 } else if (this.pages.length > 0) {
                     console.log('Loading first page:', this.pages[0].title);
-                    this.loadPage(this.pages[0]);
+                    await this.loadPage(this.pages[0]);
                 } else {
                     console.log('No pages found, showing empty state');
                     this.showEmptyState();
@@ -2755,36 +2819,46 @@
                 if (this.editorModal) {
                     // Close modal
                     this.editorModal.addEventListener('click', (e) => {
-                        if (e.target === this.editorModal || e.target.matches('[data-action="close-editor"]')) {
+                        if (e.target === this.editorModal || e.target.classList.contains('modal-close')) {
+                            this.closeEditor();
+                        }
+                    });
+
+                    // Form submission
+                    const wikiForm = this.editorModal.querySelector('#wiki-form');
+                    if (wikiForm) {
+                        wikiForm.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            this.savePage();
+                        });
+                    }
+
+                    // Cancel button
+                    this.editorModal.addEventListener('click', (e) => {
+                        if (e.target.id === 'editor-cancel') {
                             this.closeEditor();
                         }
                     });
 
                     // Save button
                     this.editorModal.addEventListener('click', (e) => {
-                        if (e.target.matches('[data-action="save-page"]')) {
+                        if (e.target.id === 'save-page-btn') {
+                            e.preventDefault();
                             this.savePage();
                         }
                     });
 
-                    // Live preview
-                    const textarea = this.editorModal.querySelector('.wiki-form-textarea');
-                    if (textarea) {
-                        textarea.addEventListener('input', () => {
-                            this.updatePreview();
-                        });
-                    }
-
-                    // Toolbar buttons
+                    // Delete button
                     this.editorModal.addEventListener('click', (e) => {
-                        if (e.target.classList.contains('wiki-toolbar-btn')) {
-                            this.insertMarkdown(e.target.dataset.markdown);
+                        if (e.target.id === 'delete-page-btn') {
+                            e.preventDefault();
+                            this.deletePage();
                         }
                     });
                 }
             }
 
-            loadPage(page) {
+            async loadPage(page) {
                 this.currentPage = page;
 
                 // Update sidebar active state
@@ -2796,16 +2870,29 @@
                 });
 
                 // Render page content
-                this.renderPageContent(page);
+                await this.renderPageContent(page);
                 this.updateControls();
             }
 
-            renderPageContent(page) {
+            async renderPageContent(page) {
                 if (!this.content) return;
 
                 try {
+                    let content = '';
+
+                    // Check if page has file_url or content
+                    if (page.file_url) {
+                        // Fetch markdown from storage
+                        content = await this.fetchMarkdownFromStorage(page.file_url);
+                    } else if (page.content) {
+                        // Fallback to database content for existing pages
+                        content = page.content;
+                    } else {
+                        content = '# No content available\n\nThis page has no content yet. Upload a markdown file to add content.';
+                    }
+
                     // Parse markdown and sanitize HTML
-                    const html = marked.parse(page.content || '');
+                    const html = marked.parse(content);
                     const sanitizedHtml = DOMPurify.sanitize(html);
                     this.content.innerHTML = sanitizedHtml;
 
@@ -2816,6 +2903,19 @@
                 } catch (error) {
                     console.error('Error rendering page content:', error);
                     this.content.innerHTML = '<p>Error loading page content.</p>';
+                }
+            }
+
+            async fetchMarkdownFromStorage(fileUrl) {
+                try {
+                    const response = await fetch(fileUrl);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch file: ${response.status}`);
+                    }
+                    return await response.text();
+                } catch (error) {
+                    console.error('Error fetching markdown from storage:', error);
+                    return '# Error Loading Content\n\nUnable to load the markdown file for this page.';
                 }
             }
 
@@ -2948,34 +3048,60 @@
                     return;
                 }
 
-                // Populate form - fix the field IDs to match the HTML
+                // Populate form
                 const titleInput = this.editorModal.querySelector('#page-title');
                 const slugInput = this.editorModal.querySelector('#page-slug');
                 const categorySelect = this.editorModal.querySelector('#page-category');
-                const contentTextarea = this.editorModal.querySelector('#page-content');
+                const parentSelect = this.editorModal.querySelector('#page-parent');
+                const fileInput = this.editorModal.querySelector('#markdown-file');
 
                 console.log('Form elements found:', {
                     titleInput: !!titleInput,
                     slugInput: !!slugInput,
                     categorySelect: !!categorySelect,
-                    contentTextarea: !!contentTextarea
+                    parentSelect: !!parentSelect,
+                    fileInput: !!fileInput
                 });
 
-                if (titleInput) titleInput.value = this.currentEditingPage.title;
-                if (slugInput) slugInput.value = this.currentEditingPage.slug;
-                if (categorySelect) {
-                    categorySelect.value = this.currentEditingPage.category;
-                    // Populate category options
-                    let options = '';
-                    this.categories.forEach(cat => {
-                        options += `<option value="${cat.name}">${cat.name}</option>`;
-                    });
-                    categorySelect.innerHTML = options;
-                }
-                if (contentTextarea) contentTextarea.value = this.currentEditingPage.content;
+                // Populate fields
+                if (titleInput) titleInput.value = this.currentEditingPage.title || '';
+                if (slugInput) slugInput.value = this.currentEditingPage.slug || '';
+                if (categorySelect) categorySelect.value = this.currentEditingPage.category || 'Getting Started';
 
-                // Update preview
-                this.updatePreview();
+                // Populate parent options
+                if (parentSelect) {
+                    let options = '<option value="">None (Top Level)</option>';
+                    this.pages.forEach(page => {
+                        if (!this.currentEditingPage.id || page.id !== this.currentEditingPage.id) {
+                            options += `<option value="${page.id}">${page.title}</option>`;
+                        }
+                    });
+                    parentSelect.innerHTML = options;
+
+                    if (this.currentEditingPage.parent_id) {
+                        parentSelect.value = this.currentEditingPage.parent_id;
+                    }
+                }
+
+                // Reset file upload area
+                this.resetFileUpload();
+
+                // Setup file upload events if not already done
+                this.setupFileUploadEvents();
+
+                // Auto-generate slug on title change
+                if (titleInput) {
+                    titleInput.addEventListener('input', () => {
+                        this.updateSlugFromTitle();
+                    });
+                }
+
+                // Update slug when parent changes
+                if (parentSelect) {
+                    parentSelect.addEventListener('change', () => {
+                        this.updateSlugFromTitle();
+                    });
+                }
 
                 // Show modal
                 console.log('Showing editor modal...');
@@ -2995,19 +3121,33 @@
             async savePage() {
                 if (!this.isAdmin || !this.currentEditingPage) return;
 
-                const titleInput = this.editorModal.querySelector('#wiki-title');
-                const slugInput = this.editorModal.querySelector('#wiki-slug');
-                const categorySelect = this.editorModal.querySelector('#wiki-category');
-                const contentTextarea = this.editorModal.querySelector('#wiki-content');
+                const titleInput = this.editorModal.querySelector('#page-title');
+                const slugInput = this.editorModal.querySelector('#page-slug');
+                const categorySelect = this.editorModal.querySelector('#page-category');
+                const parentSelect = this.editorModal.querySelector('#page-parent');
 
                 const title = titleInput?.value.trim();
-                const slug = slugInput?.value.trim() || this.generateSlug(title);
+                const slug = slugInput?.value.trim() || this.generateHierarchicalSlug(title, parentSelect?.value);
                 const category = categorySelect?.value || 'Getting Started';
-                const content = contentTextarea?.value || '';
+                const parentId = parentSelect?.value || null;
 
                 if (!title) {
                     alert('Please enter a title');
                     return;
+                }
+
+                // Check if we need to upload a file
+                let fileUrl = this.currentEditingPage.file_url; // Keep existing file URL
+
+                if (this.selectedFile) {
+                    try {
+                        // Upload file to Supabase Storage
+                        fileUrl = await this.uploadMarkdownFile(this.selectedFile, slug);
+                    } catch (error) {
+                        console.error('Error uploading file:', error);
+                        alert('Failed to upload file: ' + error.message);
+                        return;
+                    }
                 }
 
                 try {
@@ -3015,7 +3155,9 @@
                         title,
                         slug,
                         category,
-                        content,
+                        parent_id: parentId,
+                        file_url: fileUrl,
+                        content: null, // We no longer store content directly
                         is_published: true
                     };
 
@@ -3064,57 +3206,168 @@
                 }
             }
 
-            updatePreview() {
-                const contentTextarea = this.editorModal.querySelector('#wiki-content');
-                const preview = this.editorModal.querySelector('.wiki-editor-preview');
-
-                if (!contentTextarea || !preview) return;
+            async uploadMarkdownFile(file, slug) {
+                // Generate a unique filename
+                const timestamp = Date.now();
+                const extension = file.name.split('.').pop();
+                const fileName = `${slug}-${timestamp}.${extension}`;
 
                 try {
-                    const html = marked.parse(contentTextarea.value || '');
-                    const sanitizedHtml = DOMPurify.sanitize(html);
-                    preview.innerHTML = sanitizedHtml;
+                    // Upload to Supabase Storage
+                    const { data, error } = await supabase.storage
+                        .from('wiki-content')
+                        .upload(fileName, file, {
+                            contentType: file.type || 'text/markdown',
+                            upsert: false
+                        });
 
-                    // Highlight code blocks
-                    preview.querySelectorAll('pre code').forEach(block => {
-                        hljs.highlightElement(block);
-                    });
+                    if (error) throw error;
+
+                    // Get the public URL
+                    const { data: urlData } = supabase.storage
+                        .from('wiki-content')
+                        .getPublicUrl(fileName);
+
+                    return urlData.publicUrl;
+
                 } catch (error) {
-                    console.error('Error updating preview:', error);
-                    preview.innerHTML = '<p>Error rendering preview</p>';
+                    console.error('Error uploading file:', error);
+                    throw error;
                 }
             }
 
-            insertMarkdown(markdown) {
-                const textarea = this.editorModal.querySelector('#wiki-content');
-                if (!textarea) return;
-
-                const start = textarea.selectionStart;
-                const end = textarea.selectionEnd;
-                const text = textarea.value;
-                const before = text.substring(0, start);
-                const selected = text.substring(start, end);
-                const after = text.substring(end);
-
-                let replacement = markdown;
-                if (markdown.includes('|text|')) {
-                    replacement = markdown.replace('|text|', selected || 'text');
-                } else if (selected) {
-                    replacement = markdown + selected + markdown;
-                }
-
-                textarea.value = before + replacement + after;
-                textarea.focus();
-
-                // Update preview
-                this.updatePreview();
-            }
 
             generateSlug(title) {
                 return title
                     .toLowerCase()
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/^-+|-+$/g, '');
+            }
+
+            generateHierarchicalSlug(title, parentId = null) {
+                const baseSlug = this.generateSlug(title);
+
+                if (!parentId) {
+                    return baseSlug;
+                }
+
+                const parentPage = this.pages.find(p => p.id === parentId);
+                if (parentPage && parentPage.slug) {
+                    return `${parentPage.slug}/${baseSlug}`;
+                }
+
+                return baseSlug;
+            }
+
+            updateSlugFromTitle() {
+                const titleInput = this.editorModal.querySelector('#page-title');
+                const slugInput = this.editorModal.querySelector('#page-slug');
+                const parentSelect = this.editorModal.querySelector('#page-parent');
+
+                if (!titleInput || !slugInput) return;
+
+                const title = titleInput.value.trim();
+                const parentId = parentSelect?.value || null;
+
+                if (title) {
+                    const slug = this.generateHierarchicalSlug(title, parentId);
+                    slugInput.value = slug;
+                }
+            }
+
+            setupFileUploadEvents() {
+                const fileUploadArea = this.editorModal.querySelector('#file-upload-area');
+                const fileInput = this.editorModal.querySelector('#markdown-file');
+                const uploadPlaceholder = this.editorModal.querySelector('.upload-placeholder');
+                const fileInfo = this.editorModal.querySelector('.file-info');
+
+                if (!fileUploadArea || !fileInput) return;
+
+                // Click to upload
+                fileUploadArea.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-file')) {
+                        this.resetFileUpload();
+                        return;
+                    }
+                    fileInput.click();
+                });
+
+                // File selection
+                fileInput.addEventListener('change', (e) => {
+                    this.handleFileSelection(e.target.files[0]);
+                });
+
+                // Drag and drop
+                fileUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    fileUploadArea.classList.add('dragover');
+                });
+
+                fileUploadArea.addEventListener('dragleave', () => {
+                    fileUploadArea.classList.remove('dragover');
+                });
+
+                fileUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    fileUploadArea.classList.remove('dragover');
+
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.handleFileSelection(files[0]);
+                    }
+                });
+            }
+
+            handleFileSelection(file) {
+                if (!file) return;
+
+                // Validate file type
+                const validTypes = ['.md', '.markdown', '.txt'];
+                const fileName = file.name.toLowerCase();
+                const isValid = validTypes.some(ext => fileName.endsWith(ext));
+
+                if (!isValid) {
+                    alert('Please select a markdown file (.md, .markdown, or .txt)');
+                    return;
+                }
+
+                // Store the file for later upload
+                this.selectedFile = file;
+
+                // Update UI
+                this.showFileInfo(file);
+            }
+
+            showFileInfo(file) {
+                const uploadPlaceholder = this.editorModal.querySelector('.upload-placeholder');
+                const fileInfo = this.editorModal.querySelector('.file-info');
+                const fileName = fileInfo.querySelector('.file-name');
+                const fileSize = fileInfo.querySelector('.file-size');
+
+                if (uploadPlaceholder) uploadPlaceholder.style.display = 'none';
+                if (fileInfo) fileInfo.style.display = 'flex';
+                if (fileName) fileName.textContent = file.name;
+                if (fileSize) fileSize.textContent = this.formatFileSize(file.size);
+            }
+
+            resetFileUpload() {
+                const uploadPlaceholder = this.editorModal.querySelector('.upload-placeholder');
+                const fileInfo = this.editorModal.querySelector('.file-info');
+                const fileInput = this.editorModal.querySelector('#markdown-file');
+
+                if (uploadPlaceholder) uploadPlaceholder.style.display = 'flex';
+                if (fileInfo) fileInfo.style.display = 'none';
+                if (fileInput) fileInput.value = '';
+
+                this.selectedFile = null;
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
             }
 
             showEmptyState() {
